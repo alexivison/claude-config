@@ -22,13 +22,9 @@ Sub-agents preserve context by offloading investigation/verification tasks. Loca
 **Returns:** Structured review with [must]/[q]/[nit] items and verdict.
 
 ### change-minimizer
-**Use when:** As the final step after all code changes are complete.
+**Use when:** User requests a final review for bloat/over-engineering before wrapping up.
 
-**Returns:** Detailed analysis of unnecessary additions, bloat, or over-engineering. Identifies code to remove.
-
-**IMPORTANT - Auto-trigger:** YOU MUST run this as the final step:
-- After main agent completes a feature/fix implementation
-- After code-reviewer feedback has been addressed (not immediately after review, but after fixes are applied)
+**Returns:** Detailed analysis of unnecessary additions, bloat, or code to remove.
 
 ### project-researcher
 **Use when:** Starting work on a new project, need context on project status/team/decisions, or looking for design specs and documentation.
@@ -51,14 +47,37 @@ Sub-agents preserve context by offloading investigation/verification tasks. Loca
 | Starting work on new project | Yes - project-researcher |
 | Need project context/docs/designs | Yes - project-researcher |
 | Review a PR | Yes - code-reviewer |
-| Final review before PR | Yes - code-reviewer |
-| After any code changes complete | Yes - change-minimizer (auto) |
+| Review for bloat/over-engineering | Yes - change-minimizer (on request) |
+
+### Workflows
+
+Note: `[wait]` = show findings, use AskUserQuestion, wait for user before continuing.
+
+**New Feature:**
+```
+project-researcher (if unfamiliar) → [wait] → implementation → code-reviewer (optional) → [wait] → change-minimizer (optional)
+```
+
+**Bug Fix:**
+```
+debug-investigator (if complex) → [wait] → implementation → change-minimizer (optional)
+```
+
+**PR Review:**
+```
+code-reviewer → [wait] → address feedback → change-minimizer (optional)
+```
+
+**Project Onboarding:**
+```
+project-researcher → [wait] → /planning-implementations (if substantial) → feature workflow
+```
 
 ### Delegation Transparency
 
 When a task could potentially involve a sub-agent, briefly state your reasoning:
-- **If delegating:** "Delegating to [agent] because [reason]."
-- **If not delegating:** "Handling directly because [reason]." (e.g., "simple fix", "obvious cause", "single-line change")
+- **If delegating:** "Delegating to debug-investigator because this race condition needs systematic investigation across threading code."
+- **If not delegating:** "Handling directly - single-line off-by-one error."
 
 Keep it short - one sentence is enough.
 
@@ -73,21 +92,14 @@ When delegating, include:
 
 IMPORTANT: After any sub-agent completes, you MUST:
 
-1. Show the user the full detailed findings (not just a summary)
-2. STOP and ask: **"Ready to proceed?"**
-3. Wait for user confirmation before taking any action
+1. ALWAYS show the user the full detailed findings - NO EXCEPTIONS. Never summarize or omit findings.
+2. Use AskUserQuestion to ask "Ready to proceed?" with options:
+   - "Proceed with implementation"
+   - "Modify approach"
+   - "Cancel"
+3. Wait for user selection before taking any action
 
-```
-**[agent-name] findings:**
-
-[Full detailed findings from the agent]
-
----
-
-Ready to proceed?
-```
-
-Never silently act on sub-agent results. Always wait for explicit user go-ahead.
+Never silently act on sub-agent results.
 
 ### Referencing Findings
 
@@ -95,25 +107,12 @@ When discussing which findings to address, reference by `file:line` rather than 
 - Good: "fix the truncate issue at :68"
 - Avoid: "fix #3"
 
-This is more reliable since agent output format may vary.
-
-### Automatic Agent Flow
-
-```
-Implementation → change-minimizer → Done
-Implementation → code-reviewer → apply fixes → change-minimizer → Done
-```
-
-IMPORTANT: change-minimizer always runs LAST, after all fixes are applied.
-
 ## Skills
 
-Auto-triggered based on context.
-
-- **writing-tests** — Testing Trophy methodology, determines test type
-- **reviewing-code** — Review guidelines (internal resource for code-reviewer agent, don't invoke directly)
-- **addressing-pr-comments** — Fetches and addresses PR feedback
-- **planning-implementations** — Creates SPEC.md, DESIGN.md, PLAN.md, TASK*.md
+- **writing-tests** — Triggered when asked to write tests. Uses Testing Trophy methodology.
+- **reviewing-code** — Internal resource for code-reviewer agent. Don't invoke directly.
+- **addressing-pr-comments** — Triggered when asked to address PR feedback.
+- **planning-implementations** — Triggered when asked to plan a feature. Creates SPEC.md, DESIGN.md, PLAN.md, TASK*.md.
 
 # Development Guidelines
 - Refer to `~/.claude/rules/development.md`
