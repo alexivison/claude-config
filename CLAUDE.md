@@ -10,9 +10,11 @@ Sub-agents preserve context by offloading investigation/verification tasks. Loca
 ### debug-investigator
 **Use when:** Complex bugs requiring systematic investigation that would bloat main context.
 
-**Returns:** Root cause, location, fix approach, test cases. Does NOT implement.
+**Writes to:** `~/.claude/investigations/{issue-id}.md` — Full findings preserved outside main context.
 
-**After:** Main agent implements the fix based on findings.
+**Returns:** Brief summary with file path, verdict, and one-line summary.
+
+**After:** Main agent reads findings file and implements the fix.
 
 ### code-reviewer
 **Use when:** User asks to review a PR or code changes. Pre-commit/PR verification, or when a second opinion is needed.
@@ -92,12 +94,16 @@ When delegating, include:
 
 IMPORTANT: After any sub-agent completes, you MUST:
 
-1. ALWAYS show the user the full detailed findings - NO EXCEPTIONS. Never summarize or omit findings.
-2. Use AskUserQuestion to ask "Ready to proceed?" with options:
+1. **For file-based agents** (debug-investigator):
+   - Read the findings file (e.g., `~/.claude/investigations/{issue-id}.md`)
+   - Show the user the full detailed findings - NO EXCEPTIONS
+2. **For inline agents** (code-reviewer, change-minimizer, project-researcher):
+   - Show the user the full detailed findings directly
+3. Use AskUserQuestion to ask "Ready to proceed?" with options:
    - "Proceed with implementation"
    - "Modify approach"
    - "Cancel"
-3. Wait for user selection before taking any action
+4. Wait for user selection before taking any action
 
 Never silently act on sub-agent results.
 

@@ -15,6 +15,7 @@ session-env/
 shell-snapshots/
 todos/
 plans/
+investigations/
 
 # Debug and telemetry
 debug/
