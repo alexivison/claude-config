@@ -124,8 +124,9 @@ On approval:
 1. Make minimal, focused edits
 2. One concept per change (easier to revert)
 3. Preserve existing file structure and tone
-4. If git available, commit: `chore(autoskill): [description]`
-5. Report changes made
+4. **Check related files:** Update templates, reference docs, and examples in the skill folder to match new guidelines
+5. If git available, commit: `chore(autoskill): [description]`
+6. Report changes made
 
 ## Constraints
 
