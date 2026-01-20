@@ -77,6 +77,11 @@ Ask the user (if not clear):
 - Don't assume agent remembers previous tasks
 - List all dependencies explicitly
 
+### Documentation Verbosity
+- **SPEC.md / PLAN.md / DESIGN.md**: High-level requirements only. Avoid implementation code examples.
+- **TASK files**: Include implementation details needed for execution (function signatures, type definitions, patterns). Keep focused on *what* to build, not full consumer integration examples.
+- Link between documents rather than duplicating content (e.g., "See TASK6.md for details")
+
 ### Requirements Over Implementation
 - Focus on requirements, references, and key gotchas
 - Reference existing implementations rather than duplicating code
