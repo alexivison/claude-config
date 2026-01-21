@@ -27,6 +27,8 @@ Identify issues only — don't implement fixes.
 - Overly defensive error handling
 - Production code >500 lines (assume bloat)
 - Test helpers/mocking when simpler approaches work
+- Repetitive test cases that could use `it.each` or parameterization
+- Edge case tests for unrealistic scenarios (e.g., empty inputs that can't occur in practice)
 
 ## Boundaries
 
