@@ -37,6 +37,7 @@ ln -sf ~/dotfiles/claude/* ~/.claude/
 | `debug-investigator` | Systematic bug investigation, returns root cause analysis |
 | `project-researcher` | Gathers project context from Notion/Figma/Slack |
 | `test-runner` | Runs tests, returns only failures (isolates verbose output) |
+| `check-runner` | Runs typecheck/lint, returns only errors (isolates verbose output) |
 | `log-analyzer` | Analyzes logs, returns error summary (isolates verbose output) |
 
 ## Skills
@@ -50,6 +51,36 @@ ln -sf ~/dotfiles/claude/* ~/.claude/
 | `address-pr` | "address PR comments", "check feedback" |
 | `autoskill` | "learn from this session", "remember this pattern", `/autoskill` |
 
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `context-bar.sh` | Status line display |
+| `weekly-report.sh` | Generate weekly summary of investigations and projects |
+
+### Scheduling weekly-report.sh
+
+Run manually anytime:
+```bash
+~/.claude/scripts/weekly-report.sh
+```
+
+Or schedule automatically:
+
+**macOS (launchd):**
+```bash
+# Create plist in ~/Library/LaunchAgents/com.claude.weekly-report.plist
+# with StartCalendarInterval for desired schedule, then:
+launchctl load ~/Library/LaunchAgents/com.claude.weekly-report.plist
+```
+
+**Linux (cron):**
+```bash
+# Run Fridays at 4:30pm
+crontab -e
+30 16 * * 5 ~/.claude/scripts/weekly-report.sh
+```
+
 ## Ignored (local-only)
 
 These stay local and aren't version controlled:
@@ -58,3 +89,4 @@ These stay local and aren't version controlled:
 - `cache/`, `image-cache/` - Temporary data
 - `history.jsonl` - Conversation history
 - `plugins/`, `projects/` - Per-machine data
+- `scripts/*.plist` - macOS LaunchAgent configs

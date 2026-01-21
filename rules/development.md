@@ -2,11 +2,12 @@
 
 ## Git & PRs
 - Use `gh` for GitHub operations
-- Look for PR templates when creating PRs
+- Look for PR templates when creating PRs (check `.github/PULL_REQUEST_TEMPLATE.md`)
 - Create draft PRs unless instructed otherwise
 - Create branches from `main`
 - Branch naming: `<ISSUE-ID>-<kebab-case-description>` (e.g., `ENG-123-add-user-auth`)
 - Include issue ID in PR description (e.g., `Closes ENG-123`)
+- Create separate PRs for changes in different services (e.g., FE and BE fixes should be separate PRs with cross-references)
 
 ## Worktrees (Multi-Agent)
 When starting work that requires a new branch:
