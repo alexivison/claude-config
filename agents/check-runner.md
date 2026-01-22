@@ -12,7 +12,7 @@ You are a static analysis runner. Execute typechecks and linting, return a conci
 
 1. Detect project stack and package manager
 2. Run typecheck command (if applicable)
-3. Run lint command (if applicable)
+3. Detect and run ALL lint scripts (see Lint Script Detection)
 4. Parse output for errors/warnings
 5. Return summary (not full output)
 
@@ -22,12 +22,27 @@ Detect project stack from config files and run appropriate commands. Common exam
 
 | Indicator | Stack | Typecheck | Lint |
 |-----------|-------|-----------|------|
-| tsconfig.json | TypeScript | `tsc --noEmit` | `eslint .` |
+| tsconfig.json | TypeScript | `tsc --noEmit` | See below |
 | pyproject.toml | Python | `mypy .` | `ruff check .` or `flake8` |
 | go.mod | Go | `go build ./...` | `go vet ./...` |
 | Cargo.toml | Rust | `cargo check` | `cargo clippy` |
 
 For other stacks, detect config files and use standard tooling for that ecosystem.
+
+## Lint Script Detection (Node.js)
+
+For Node.js projects, scan `package.json` for lint scripts:
+
+1. **Check for combined script first**: Look for `check`, `lint`, or `validate` script that runs multiple checks
+2. **If no combined script**: Find all `lint:*` scripts (e.g., `lint:eslint`, `lint:css`, `lint:csv`) and run each
+3. **Fallback**: If no lint scripts found, run `eslint .` directly if config exists
+
+```bash
+# Example: Extract all lint scripts from package.json
+jq -r '.scripts | to_entries[] | select(.key | startswith("lint")) | .key' package.json
+```
+
+Run all detected lint scripts. Report failures from each separately.
 
 ## Package Manager Detection (Node.js)
 
@@ -66,7 +81,9 @@ Use the detected package manager for running commands. Check package.json script
 
 ### Commands
 `pnpm tsc --noEmit`
-`pnpm eslint .`
+`pnpm lint:eslint`
+`pnpm lint:css`
+`pnpm lint:csv`
 ```
 
 If all checks pass:
@@ -79,7 +96,9 @@ If all checks pass:
 
 ### Commands
 `pnpm tsc --noEmit`
-`pnpm eslint .`
+`pnpm lint:eslint`
+`pnpm lint:css`
+`pnpm lint:csv`
 ```
 
 ## Guidelines
