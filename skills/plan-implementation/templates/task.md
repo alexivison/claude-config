@@ -56,15 +56,11 @@ Test cases (implementer writes the actual test code, see `@write-tests`):
 
 ## Verification
 
-```bash
-# Adjust commands based on project tooling
-pnpm typecheck && pnpm lint && pnpm test
-```
+Run **test-runner** and **check-runner** sub-agents in parallel.
 
 **Expected output:**
-- Typecheck: No errors (exit 0)
-- Lint: No errors, warnings acceptable
-- Tests: All pass, no skipped tests related to this task
+- check-runner: PASS (0 errors, warnings acceptable)
+- test-runner: PASS (all tests pass, no skipped tests related to this task)
 
 ## Acceptance Criteria
 
