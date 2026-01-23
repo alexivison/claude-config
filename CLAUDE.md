@@ -14,6 +14,7 @@ Evidence before claims. Never state success without fresh proof.
 | "Lint clean" | Run linter, show zero errors |
 | "Build succeeds" | Run build, show exit 0 |
 | "Bug fixed" | Reproduce original symptom, show it passes |
+| "Ready for PR" | Run /pre-pr-verification, show all checks pass |
 
 **Red flags requiring re-verification:**
 - Tentative language ("should work", "probably fixed")
@@ -99,12 +100,12 @@ Note: `[wait]` = show findings, use AskUserQuestion, wait for user before contin
 
 **New Feature:**
 ```
-project-researcher (if unfamiliar) → [wait] → /brainstorm (if unclear requirements) → [wait] → /plan-implementation (if substantial) → implementation → test-runner + check-runner (parallel) → /code-review (optional) → /minimize (optional)
+project-researcher (if unfamiliar) → [wait] → /brainstorm (if unclear requirements) → [wait] → /plan-implementation (if substantial) → implementation → test-runner + check-runner (parallel) → /code-review → fix issues → /pre-pr-verification → PR → /minimize (if PR large)
 ```
 
 **Bug Fix:**
 ```
-debug-investigator (if complex) → [wait] → log-analyzer (if relevant) → [wait] → implementation → test-runner + check-runner (parallel) → /minimize (optional)
+debug-investigator (if complex) → [wait] → log-analyzer (if relevant) → [wait] → implementation → test-runner + check-runner (parallel) → /pre-pr-verification → PR
 ```
 
 **PR Review:**
@@ -164,6 +165,7 @@ When discussing which findings to address, reference by `file:line` rather than 
 - **address-pr** — Fetch PR comments and suggest solutions. Invoke via `/address-pr`.
 - **plan-implementation** — Plan features for agentic implementation. Creates SPEC.md, DESIGN.md, PLAN.md, TASK*.md. Invoke via `/plan-implementation`.
 - **autoskill** — Learns from sessions or documents to extract preferences and create/update skills. Two modes: session learning (from corrections) and document learning (from books/articles/codebases). Uses TDD approach for new skill creation. Invoke via `/autoskill` or `/autoskill [url/path]`.
+- **pre-pr-verification** — Run all checks (typecheck, lint, test) before PR creation. Enforces evidence-based completion. Auto-invoked before `gh pr create`, or manually via `/pre-pr-verification`.
 
 ### Autoskill Triggers
 

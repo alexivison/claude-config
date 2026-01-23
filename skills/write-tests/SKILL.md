@@ -27,3 +27,22 @@ Write appropriate tests based on code characteristics and Testing Trophy princip
 - **Don't test externals**: Use test doubles—verify calls, not external behavior
 - **Test behavior, not implementation**
 - **Keep tests in the same PR as implementation**
+
+## RED Phase
+
+When writing tests for new functionality:
+
+1. **Write the test first** — before implementation
+2. **Run it and watch it FAIL**
+3. **Verify it fails for the RIGHT reason:**
+   - Good: "Expected X but received undefined" (feature missing)
+   - Bad: "Cannot find module" (syntax/import error)
+
+**Why this matters:** A test that passes immediately proves nothing. Only a test you've seen fail can you trust to catch regressions.
+
+**When RED phase is required:**
+- Creating a new test file → always
+- Adding tests for new functionality → always
+
+**When RED phase is optional:**
+- Adding a single test to an existing test file for coverage → optional but recommended

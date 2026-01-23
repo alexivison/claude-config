@@ -85,7 +85,13 @@ Cover (as relevant):
 
 ## Output
 
-After completing all phases, summarize:
+After completing all phases, summarize and save to file.
+
+**Location:** Same directory where PLAN.md will live:
+- If project folder exists: `doc/projects/<project-name>/YYYY-MM-DD-brainstorm.md`
+- If starting fresh: Create the folder first, then save there
+
+**Why same directory?** Keeps all feature documentation together (brainstorm → SPEC → DESIGN → PLAN → TASKs). No orphaned docs.
 
 ```
 ## Brainstorm Summary: [Feature Name]
@@ -110,5 +116,6 @@ Ready for `/plan-implementation` or [specific next action]
 ## Handoff to Planning
 
 When brainstorm is complete and user confirms:
+- Save the brainstorm summary to file
 - Offer to run `/plan-implementation` with captured context
-- Pass the brainstorm summary as input context
+- Reference the saved brainstorm file in planning docs

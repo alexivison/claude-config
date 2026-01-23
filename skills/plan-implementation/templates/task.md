@@ -58,8 +58,13 @@ Test cases (implementer writes the actual test code, see `@write-tests`):
 
 ```bash
 # Adjust commands based on project tooling
-<typecheck-command> && <lint-command> && <test-command>
+pnpm typecheck && pnpm lint && pnpm test
 ```
+
+**Expected output:**
+- Typecheck: No errors (exit 0)
+- Lint: No errors, warnings acceptable
+- Tests: All pass, no skipped tests related to this task
 
 ## Acceptance Criteria
 
