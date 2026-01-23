@@ -2,7 +2,7 @@
 name: pre-pr-verification
 description: Run full verification before creating PR. Enforces evidence-based completion. Use before any PR creation or when asked to verify changes.
 user-invocable: true
-allowed-tools: Bash
+allowed-tools: Bash, Task
 ---
 
 # Pre-PR Verification
@@ -27,13 +27,18 @@ Check project's package.json or CI config for the exact commands. Common pattern
 
 ### Step 2: Run All Checks
 
-Run checks **sequentially in main context** so failures are immediately visible:
+Delegate to sub-agents **in parallel** for efficiency:
 
-```bash
-pnpm typecheck && pnpm lint && pnpm test
-```
+1. Launch **test-runner** and **check-runner** simultaneously using Task tool
+2. Wait for both to complete
+3. Review their summaries
 
-**Why not sub-agents?** Sub-agents return summaries, not full output. When a test fails with a cryptic error, you need the details to debug — not a one-liner.
+**Why sub-agents?**
+- Parallel execution is faster
+- Summaries show what failed (test name, file:line, error message)
+- Isolates verbose output from main context
+
+**If you need more detail:** Re-run the specific failing test/check in main context to see full output.
 
 ### Step 3: Handle Failures
 
