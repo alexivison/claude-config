@@ -25,11 +25,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/pre-push.sh",
-            "timeout": 300
-          },
-          {
-            "type": "command",
             "command": "~/.claude/hooks/worktree-guard.sh",
             "timeout": 10
           }

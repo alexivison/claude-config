@@ -58,6 +58,11 @@ ln -sf ~/dotfiles/claude/* ~/.claude/
 Standard development workflow (discipline-based, documented in CLAUDE.md):
 
 ```
+Single Task (most common):
+  Pick up task → read requirements → /write-tests (if needed) → implement
+  → test-runner + check-runner → fix issues → /pre-pr-verification
+  → PR → wait for review → /address-pr (if comments) → merge → next task
+
 New Feature:
   project-researcher (if unfamiliar)
   → /brainstorm (if unclear requirements)
@@ -82,6 +87,7 @@ Key principles:
 - **Evidence before claims** — never state "tests pass" without running them
 - **RED phase for tests** — watch new tests fail before implementation
 - **Verification before PR** — run `/pre-pr-verification` before every PR
+- **Auto-invoke skills** — skills trigger automatically based on context
 
 ## Scripts
 
@@ -117,8 +123,7 @@ crontab -e
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| `skill-eval.sh` | UserPromptSubmit | Evaluates if skills should activate |
-| `pre-push.sh` | PreToolUse (Bash) | Guards against accidental pushes |
+| `skill-eval.sh` | UserPromptSubmit | Detects skill triggers, suggests invocation |
 | `worktree-guard.sh` | PreToolUse (Bash) | Prevents branch switching in shared repos |
 
 ## Ignored (local-only)

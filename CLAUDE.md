@@ -118,6 +118,11 @@ debug-investigator (if complex) → [wait] → log-analyzer (if relevant) → [w
 project-researcher → [wait] → /plan-implementation (if substantial) → feature workflow
 ```
 
+**Single Task (most common):**
+```
+Pick up task → read requirements → /write-tests (if tests needed) → implement → test-runner + check-runner → fix issues → /pre-pr-verification → PR → wait for review → /address-pr (if comments) → merge → next task
+```
+
 ### Delegation Transparency
 
 It's fine to skip delegation for small/simple tasks, but always state your reasoning:
@@ -158,14 +163,36 @@ When discussing which findings to address, reference by `file:line` rather than 
 
 ## Skills
 
-- **brainstorm** — Structured context capture before planning. Use before `/plan-implementation` for new features, when requirements are unclear, or when multiple approaches exist. Invoke via `/brainstorm`.
-- **write-tests** — ALWAYS invoke via `/write-tests` before writing any tests, whether explicitly requested or as part of implementation. Uses Testing Trophy methodology.
-- **code-review** — Review code for quality, bugs, and guideline compliance. Invoke via `/code-review`.
-- **minimize** — Review changes for bloat and unnecessary complexity. Invoke via `/minimize`.
-- **address-pr** — Fetch PR comments and suggest solutions. Invoke via `/address-pr`.
-- **plan-implementation** — Plan features for agentic implementation. Creates SPEC.md, DESIGN.md, PLAN.md, TASK*.md. Invoke via `/plan-implementation`.
-- **autoskill** — Learns from sessions or documents to extract preferences and create/update skills. Two modes: session learning (from corrections) and document learning (from books/articles/codebases). Uses TDD approach for new skill creation. Invoke via `/autoskill` or `/autoskill [url/path]`.
-- **pre-pr-verification** — Run all checks (typecheck, lint, test) before PR creation. Enforces evidence-based completion. Auto-invoked before `gh pr create`, or manually via `/pre-pr-verification`.
+- **brainstorm** — Structured context capture before planning. Use before `/plan-implementation` for new features, when requirements are unclear, or when multiple approaches exist.
+- **plan-implementation** — Plan features for agentic implementation. Creates SPEC.md, DESIGN.md, PLAN.md, TASK*.md.
+- **write-tests** — Testing Trophy methodology with RED phase. Use before writing any tests.
+- **code-review** — Review code for quality, bugs, and guideline compliance.
+- **pre-pr-verification** — Run all checks (typecheck, lint, test) before PR creation.
+- **minimize** — Review changes for bloat and unnecessary complexity.
+- **address-pr** — Fetch PR comments and suggest solutions.
+- **autoskill** — Learns from sessions to extract preferences and update skills.
+
+### Skill Auto-Invocation Rules
+
+**MUST invoke** (non-negotiable):
+
+| Trigger | Skill | Why |
+|---------|-------|-----|
+| About to write any test | `/write-tests` | Ensures Testing Trophy methodology, RED phase |
+| About to create PR | `/pre-pr-verification` | Evidence-based completion |
+| User says "review" or shows code for feedback | `/code-review` | Consistent quality checks |
+
+**SHOULD invoke** (unless clearly inappropriate):
+
+| Trigger | Skill | Why |
+|---------|-------|-----|
+| New feature with unclear requirements | `/brainstorm` | Capture context before planning |
+| Substantial new feature (3+ files) | `/plan-implementation` | Structured approach |
+| PR has reviewer comments | `/address-pr` | Systematic response |
+| PR is large (>200 LOC) | `/minimize` | Catch bloat |
+| User corrects me 2+ times | `/autoskill` | Learn preferences |
+
+**How to invoke:** Use the Skill tool with the skill name. Do not just "follow the skill's guidance" — actually invoke it.
 
 ### Autoskill Triggers
 
