@@ -21,7 +21,18 @@ Evidence before claims. Never state success without fresh proof.
 - Planning commit/PR without running checks
 - Relying on previous runs as proof
 
+**Action:** If you catch yourself doing any of the above, STOP. Re-run checks immediately before proceeding.
+
 **3 Strikes Rule:** After 3 failed fix attempts for the same issue, stop patching. Document what was tried, question the approach, and ask user before continuing.
+
+## PR Creation Gate
+
+**STOP. Before ANY `gh pr create` command, verify:**
+- [ ] `/pre-pr-verification` has been invoked THIS session (hook suggestions don't count — must actually invoke the skill)
+- [ ] All checks passed with evidence shown
+- [ ] Verification summary included in PR description (see /pre-pr-verification output format)
+
+If you cannot check all boxes, DO NOT create the PR.
 
 ## Sub-Agents
 
@@ -85,7 +96,9 @@ Sub-agents preserve context by offloading investigation/verification tasks. Loca
 | Fix simple bug | No - main agent |
 | Run test suite | Yes - test-runner |
 | Run typecheck/lint | Yes - check-runner |
-| Run tests + checks | Yes - test-runner + check-runner (parallel) |
+| Run tests + checks | Yes - test-runner + check-runner (parallel)* |
+
+*To run in parallel: invoke both agents in the same message using multiple Task tool calls. Both execute simultaneously and return separate summaries.
 | Analyze logs | Yes - log-analyzer |
 | Investigate complex/intermittent bug | Yes - debug-investigator |
 | Explore codebase structure | Yes - built-in Explore agent |
@@ -100,7 +113,7 @@ Note: `[wait]` = show findings, use AskUserQuestion, wait for user before contin
 
 **New Feature:**
 ```
-project-researcher (if unfamiliar) → [wait] → /brainstorm (if unclear requirements) → [wait] → /plan-implementation (if substantial) → implementation → test-runner + check-runner (parallel) → /code-review → fix issues → /pre-pr-verification → PR → /minimize (if PR large)
+project-researcher (if unfamiliar) → [wait] → /brainstorm (if unclear requirements) → [wait] → /plan-implementation (if substantial) → implementation → test-runner + check-runner (parallel) → fix issues → /pre-pr-verification → PR → /minimize (if PR large)
 ```
 
 **Bug Fix:**
@@ -120,8 +133,17 @@ project-researcher → [wait] → /plan-implementation (if substantial) → feat
 
 **Single Task (most common):**
 ```
-Pick up task → read requirements → /write-tests (if tests needed) → implement → test-runner + check-runner → fix issues → /pre-pr-verification → PR → wait for review → /address-pr (if comments) → merge → next task
+Pick up task → read requirements → /write-tests (if tests needed) → test-runner (verify RED - must fail) → implement → test-runner + check-runner (verify GREEN) → fix issues → /pre-pr-verification → PR → wait for review → /address-pr (if comments) → merge → next task
 ```
+
+### Plan/Task File Updates
+
+After completing ANY task from PLAN.md or TASK*.md:
+1. Update the checkbox: `- [ ]` → `- [x]`
+2. Commit the plan update with the implementation (or immediately after)
+3. Wait for user approval before moving to next task in multi-task implementations
+
+This is easy to forget — make it part of your task completion routine.
 
 ### Delegation Transparency
 
@@ -140,20 +162,18 @@ When delegating to sub-agents, include:
 
 ### After Sub-Agent Returns
 
-IMPORTANT: After any sub-agent completes, you MUST:
-
-1. **For file-based agents** (debug-investigator, log-analyzer):
-   - Read the findings file (e.g., `~/.claude/investigations/{issue-id}.md` or `~/.claude/logs/{identifier}.md`)
-   - Show the user the full detailed findings - NO EXCEPTIONS
-2. **For inline agents** (project-researcher, test-runner, check-runner):
-   - Show the user the full detailed findings directly
-3. Use AskUserQuestion to ask "Ready to proceed?" with options:
+**Investigation agents** (debug-investigator, project-researcher, log-analyzer) — MUST STOP:
+1. Read/show findings to user
+2. Use AskUserQuestion: "Ready to proceed?" with options:
    - "Proceed with implementation"
    - "Modify approach"
    - "Cancel"
-4. Wait for user selection before taking any action
+3. Wait for user selection before taking any action
 
-Never silently act on sub-agent results.
+**Verification agents** (test-runner, check-runner) — continue automatically:
+1. Show summary of results
+2. Address any failures/errors directly
+3. No need to ask — these are routine checks
 
 ### Referencing Findings
 

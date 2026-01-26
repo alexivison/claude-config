@@ -21,10 +21,6 @@ gwta ENG-123-add-auth
 # Or manually: git worktree add ../myapp-ENG-123-add-auth -b ENG-123-add-auth && cd ../myapp-ENG-123-add-auth
 ```
 
-## Task Workflow
-- Wait for user approval before moving to next task in multi-task implementations
-- Update checkboxes in plan files (PLAN.md, TASK*.md) after completing tasks
-
 ## Code Comments
 - Keep comments short and to the point
 - Only add remarks to logically difficult code
