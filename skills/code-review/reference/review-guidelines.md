@@ -60,6 +60,15 @@ Maintain code quality to deliver features:
 - [ ] **YAGNI** - No unnecessary features or complexity
 - [ ] **Style guide compliance**
 
+### Feature Flag Safety
+
+When code uses feature flags:
+- [ ] **Flag OFF = existing behavior** - Default (off) state must preserve current functionality
+- [ ] **Both paths tested** - Verify behavior with flag on AND off
+- [ ] **No dead code** - Remove flag and old code path after rollout complete
+
+This is a `[must]` issue - breaking default behavior is a regression.
+
 ### AI-Generated Code
 AI-generated code is treated as written by the supervisor (PR author). The supervisor takes full responsibility.
 
