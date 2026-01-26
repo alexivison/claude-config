@@ -57,39 +57,12 @@ ln -sf ~/dotfiles/claude/* ~/.claude/
 
 ## Workflow
 
-Standard development workflow (discipline-based, documented in CLAUDE.md):
-
-```
-Single Task (most common):
-  Pick up task → read requirements → /write-tests (if needed) → implement
-  → code-critic loop (autonomous) → test-runner + check-runner + security-scanner
-  → /pre-pr-verification → PR → wait for review → /address-pr (if comments) → merge
-
-New Feature:
-  project-researcher (if unfamiliar)
-  → /brainstorm (if unclear requirements)
-  → /plan-implementation (if substantial)
-  → implementation
-  → code-critic loop (autonomous, max 3 iterations)
-  → test-runner + check-runner + security-scanner (parallel)
-  → /pre-pr-verification
-  → PR
-  → /minimize (if PR large)
-
-Bug Fix:
-  debug-investigator (if complex)
-  → implementation
-  → code-critic loop (autonomous)
-  → test-runner + check-runner + security-scanner (parallel)
-  → /pre-pr-verification
-  → PR
-```
+See `CLAUDE.md` for workflow definitions (single source of truth).
 
 Key principles:
 - **Evidence before claims** — never state "tests pass" without running them
-- **RED phase for tests** — watch new tests fail before implementation
 - **Verification before PR** — run `/pre-pr-verification` before every PR
-- **Auto-invoke skills** — skills trigger automatically based on context
+- **Code-critic for plan tasks** — mandatory for all TASK*.md implementations
 
 ## Scripts
 
