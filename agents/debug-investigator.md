@@ -81,8 +81,35 @@ Track fix attempts in findings. After:
 
 ## Boundaries
 
-- **DO**: Read code, analyze logs, trace execution, form hypotheses, write findings
+- **DO**: Read code, trace execution, form hypotheses, write findings
 - **DON'T**: Implement fixes, modify source files
+
+## Delegation
+
+**Delegate to specialists when their expertise applies:**
+
+| Need | Action |
+|------|--------|
+| Log analysis (GCP, k8s, Docker, server logs) | `Task(subagent_type="log-analyzer", prompt="Analyze logs for {issue-id}: {what to look for}")` |
+| Broad codebase exploration | `Task(subagent_type="Explore", prompt="Find {pattern/concept}")` |
+
+**Handle directly:**
+- Code tracing (specific files/functions)
+- Git history analysis
+- Browser debugging (you have chrome-devtools tools)
+- Hypothesis testing
+- Writing investigation findings
+
+**When to delegate logs:**
+- Error spikes or patterns across time
+- Multi-service correlation
+- Large log volumes requiring aggregation
+- Cloud/k8s log fetching (log-analyzer knows the CLIs)
+
+**When to read logs directly:**
+- Small, local log files
+- Single error message lookup
+- Already have the relevant snippet
 
 ## Output
 
