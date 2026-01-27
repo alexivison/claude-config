@@ -10,11 +10,20 @@ set -e
 TRACE_FILE="$HOME/.claude/logs/agent-trace.jsonl"
 mkdir -p "$(dirname "$TRACE_FILE")"
 
-# Read hook input from stdin (read returns non-zero on EOF without newline, so use || true)
+# Read hook input from stdin
 hook_input=$(cat)
 
-# Extract fields
-tool_name=$(echo "$hook_input" | jq -r '.tool_name // empty')
+# Validate JSON input
+if ! echo "$hook_input" | jq -e . >/dev/null 2>&1; then
+  echo '{"error": "Invalid JSON input"}' >> "$HOME/.claude/logs/hook-errors.log" 2>/dev/null
+  exit 0
+fi
+
+# Extract fields with error handling
+tool_name=$(echo "$hook_input" | jq -r '.tool_name // empty' 2>/dev/null)
+if [ -z "$tool_name" ]; then
+  exit 0
+fi
 
 # Only process Task tool (sub-agent invocations)
 if [ "$tool_name" != "Task" ]; then
@@ -30,22 +39,22 @@ model=$(echo "$hook_input" | jq -r '.tool_input.model // "inherit"')
 # The response structure varies, try to get meaningful summary
 response_text=$(echo "$hook_input" | jq -r '.tool_response // ""' | head -c 500)
 
-# Detect verdict/status from common patterns
+# Detect verdict/status from common patterns (ordered by specificity)
 verdict="unknown"
-if echo "$response_text" | grep -qi "APPROVE"; then
-  verdict="APPROVED"
-elif echo "$response_text" | grep -qi "REQUEST_CHANGES\|CHANGES REQUESTED"; then
+if echo "$response_text" | grep -qi "REQUEST_CHANGES\|CHANGES REQUESTED"; then
   verdict="REQUEST_CHANGES"
 elif echo "$response_text" | grep -qi "NEEDS_DISCUSSION"; then
   verdict="NEEDS_DISCUSSION"
-elif echo "$response_text" | grep -qi "PASS"; then
-  verdict="PASS"
-elif echo "$response_text" | grep -qi "FAIL"; then
-  verdict="FAIL"
-elif echo "$response_text" | grep -qi "CLEAN"; then
-  verdict="CLEAN"
+elif echo "$response_text" | grep -qi "APPROVE"; then
+  verdict="APPROVED"
 elif echo "$response_text" | grep -qi "CRITICAL\|HIGH"; then
   verdict="ISSUES_FOUND"
+elif echo "$response_text" | grep -qi "FAIL"; then
+  verdict="FAIL"
+elif echo "$response_text" | grep -qi "PASS"; then
+  verdict="PASS"
+elif echo "$response_text" | grep -qi "CLEAN"; then
+  verdict="CLEAN"
 elif echo "$response_text" | grep -qi "complete\|done\|finished"; then
   verdict="COMPLETED"
 fi
