@@ -73,7 +73,7 @@ debug-investigator (if complex) → [wait] → log-analyzer (if relevant) → [w
 
 **Single Task (from plan/TASK*.md):**
 ```
-Pick up task → STOP: PRE-IMPLEMENTATION GATE → create worktree → /write-tests (if needed) → implement → update TASK*.md checkboxes → code-critic → test-runner + check-runner + security-scanner → /pre-pr-verification → commit → PR
+Pick up task → STOP: PRE-IMPLEMENTATION GATE → create worktree → /write-tests (if needed) → implement → update checkboxes (TASK*.md + PLAN.md) → code-critic → test-runner + check-runner + security-scanner → /pre-pr-verification → commit → PR
 ```
 
 ## Pre-Implementation Gate
@@ -89,7 +89,7 @@ Skip this gate = workflow violation. State which items were checked before proce
 
 **AUTONOMOUS FLOW — NO STOPPING:**
 - After /write-tests → continue to implement (no user prompt needed)
-- After implement → update TASK*.md checkboxes `- [ ]` → `- [x]`
+- After implement → update checkboxes in TASK*.md AND PLAN.md (if exists)
 - After code-critic APPROVED → continue to verification
 - After verification → continue to commit and PR
 
