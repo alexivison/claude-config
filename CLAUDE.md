@@ -85,6 +85,8 @@ Pick up task → STOP: PRE-IMPLEMENTATION CHECK → /write-tests (if needed) →
 
 Skip this gate = workflow violation. State which items were checked before proceeding.
 
+**After /write-tests completes:** Continue immediately with implementation. Do NOT stop and wait for user - the workflow is autonomous from task pickup through PR creation.
+
 **Run autonomously through PR creation.** Don't stop after commit - continue to PR. Only pause if NEEDS_DISCUSSION or 3 failed code-critic iterations.
 
 **Plan/Task updates:** After completing task, update checkbox `- [ ]` → `- [x]`, commit with implementation, wait for user approval before next task.
