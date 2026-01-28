@@ -3,7 +3,8 @@ name: architecture-critic
 description: "Reviews architectural patterns and complexity metrics. Quick scan with early exit for trivial changes, deep analysis when thresholds exceeded."
 model: opus
 tools: Read, Grep, Glob
-skills: [architecture-review]
+skills:
+  - architecture-review
 color: orange
 ---
 
