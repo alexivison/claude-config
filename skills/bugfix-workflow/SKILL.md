@@ -8,21 +8,20 @@ user-invocable: false
 
 Debug and fix bugs with investigation before implementation.
 
-## Entry Phase (Investigation)
+## Pre-Bugfix Gate
 
-Before fixing, understand the problem:
+**STOP. Before writing ANY code:**
 
-1. **Complex bug?** → Invoke `debug-investigator` agent → `[wait for user]`
-2. **Logs relevant?** → Invoke `log-analyzer` agent → `[wait for user]`
+1. **Create worktree first** — `git worktree add ../repo-branch-name -b branch-name`
+2. **Understand the bug** — Read relevant code, reproduce if possible
+3. **Complex bug?** → Invoke `debug-investigator` agent → `[wait for user]`
+4. **Logs relevant?** → Invoke `log-analyzer` agent → `[wait for user]`
 
 `[wait]` = Show findings, use AskUserQuestion, wait for user input.
 
 Investigation agents ALWAYS require user review before proceeding.
 
-## After Investigation Approved
-
-1. **Create worktree** — `git worktree add ../repo-branch-name -b branch-name`
-2. **Proceed to execution flow**
+State which items were checked before proceeding.
 
 ## Execution Flow
 
