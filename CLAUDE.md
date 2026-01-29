@@ -5,112 +5,46 @@
 - Sub-agents for context preservation only (investigation, verification)
 - Use "we" instead of "I"
 
+## Workflow Selection
+
+| Scenario | Skill | Trigger |
+|----------|-------|---------|
+| Executing TASK*.md | `task-workflow` | Auto (skill-eval.sh) |
+| New feature request | `feature-workflow` | Auto (skill-eval.sh) |
+| Bug fix / debugging | `bugfix-workflow` | Auto (skill-eval.sh) |
+
+Workflow skills load on-demand. See `~/.claude/skills/*/SKILL.md` for details.
+
 ## Autonomous Flow (CRITICAL)
 
-**Do NOT stop between steps when executing TASK*.md:**
+**Do NOT stop between steps.** Core sequence:
 ```
-/write-tests → implement → checkboxes → code-critic → architecture-critic → verification → commit → PR
-```
-
-**Only pause for:** Investigation findings, NEEDS_DISCUSSION verdict, 3 strikes, HIGH/CRITICAL security issues.
-
-**Enforcement:** PR gate blocks `gh pr create` until all markers exist. See `~/.claude/rules/autonomous-flow.md` for decision matrix.
-
-## Pre-Implementation Gate
-
-**STOP. Before writing ANY code for a TASK*.md:**
-
-1. **Create worktree first** — `git worktree add ../repo-branch-name -b branch-name`
-2. **Does task require tests?** → invoke `/write-tests` FIRST
-3. **Requirements unclear?** → `/brainstorm` or ask user
-4. **Will this bloat into a large PR?** → Split into smaller tasks before proceeding
-
-Skip this gate = workflow violation. State which items were checked before proceeding.
-
-After passing this gate, follow **Autonomous Flow** rules — no stopping until PR is created.
-
-## Workflows
-
-`[wait]` = show findings, AskUserQuestion, wait for user.
-
-**New Feature:**
-```
-/brainstorm (if unclear) → [wait] → /plan-implementation (if substantial) → create worktree → /write-tests (if needed) → implement → code-critic → architecture-critic → test-runner + check-runner + security-scanner → /pre-pr-verification → PR
+tests → implement → checkboxes → code-critic → architecture-critic → verification → commit → PR
 ```
 
-**Bug Fix:**
-```
-debug-investigator (if complex) → [wait] → log-analyzer (if relevant) → [wait] → create worktree → /write-tests (regression test) → implement fix → code-critic → architecture-critic → test-runner + check-runner + security-scanner → /pre-pr-verification → PR
-```
+**Only pause for:** Investigation findings, NEEDS_DISCUSSION, 3 strikes, HIGH/CRITICAL security.
 
-**Single Task (from plan/TASK*.md):**
-```
-Pick up task → STOP: PRE-IMPLEMENTATION GATE → create worktree → /write-tests (if needed) → implement → update checkboxes (TASK*.md + PLAN.md) → code-critic → architecture-critic → test-runner + check-runner + security-scanner → /pre-pr-verification → commit → PR
-```
+**Enforcement:** PR gate blocks until markers exist. See `~/.claude/rules/autonomous-flow.md`.
 
 ## Sub-Agents
 
-Details in `~/.claude/agents/README.md`. Key behavior rules:
+Details in `~/.claude/agents/README.md`. Quick reference:
 
-| Scenario | Action |
-|----------|--------|
+| Scenario | Agent |
+|----------|-------|
 | Run tests | test-runner |
 | Run typecheck/lint | check-runner |
-| Run tests + checks | test-runner + check-runner (parallel)* |
-| Security scan before PR | security-scanner |
+| Security scan | security-scanner |
+| Complex bug | debug-investigator |
 | Analyze logs | log-analyzer |
-| Complex bug investigation | debug-investigator |
-| Explore codebase | built-in Explore agent |
-| After implementing plan task | code-critic (MANDATORY) |
-| After code-critic passes | architecture-critic |
+| After implementing | code-critic (MANDATORY) |
+| After code-critic | architecture-critic |
 
-*Parallel: invoke both in same message using multiple Task tool calls.
+## Verification Principle
 
-**After sub-agent returns:**
-
-| Agent Class | Examples | When to Pause | Show to User |
-|-------------|----------|---------------|--------------|
-| Investigation | debug-investigator, log-analyzer | Always | Full findings, then AskUserQuestion |
-| Verification | test-runner, check-runner, security-scanner | Never (fix failures directly) | Summary only |
-| Iterative | code-critic | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
-| Advisory | architecture-critic | NEEDS_DISCUSSION only | Key findings (metrics, concerns) |
-
-**Advisory behavior**: On REQUEST_CHANGES, check existing TASK*.md for duplicates. If one covers the suggested refactor, note it and skip. Otherwise ask user about creating a task (use next available number). PR proceeds regardless.
-
-**Invocation:** Include scope (files), context (errors), success criteria.
-
-**Delegation transparency:** State reason in one sentence ("Delegating to debug-investigator because..." or "Handling directly — simple fix").
-
-## Verification Rules
-
-Evidence before claims. Never state success without fresh proof.
-
-| Claim | Required Evidence |
-|-------|-------------------|
-| "Tests pass" | Run test suite, show zero failures |
-| "Lint clean" | Run linter, show zero errors |
-| "Build succeeds" | Run build, show exit 0 |
-| "Bug fixed" | Reproduce original symptom, show it passes |
-| "Ready for PR" | Run /pre-pr-verification, show all checks pass |
-
-**Red flags:** Tentative language ("should work"), planning commit/PR without checks, relying on previous runs.
-**Action:** STOP. Re-run checks immediately.
-
-**3 Strikes Rule:** After 3 failed fix attempts, stop. Document what was tried, ask user before continuing.
-
-## PR Creation Gate
-
-**STOP. Before `gh pr create`, verify:**
-- [ ] `/pre-pr-verification` invoked THIS session (hook suggestions don't count)
-- [ ] All checks passed with evidence
-- [ ] security-scanner shows no CRITICAL/HIGH issues (or user approved exceptions)
-- [ ] Verification summary in PR description
-
-**Hook enforcement:** PR gate requires 5 markers (see `~/.claude/rules/autonomous-flow.md`). Missing markers → blocked.
+Evidence before claims. See `~/.claude/rules/execution-core.md` for full requirements.
 
 ## Skills
-
-Details in `~/.claude/skills/*/SKILL.md`. Auto-invocation rules:
 
 **MUST invoke:**
 | Trigger | Skill |
@@ -119,29 +53,16 @@ Details in `~/.claude/skills/*/SKILL.md`. Auto-invocation rules:
 | Creating PR | `/pre-pr-verification` |
 | User says "review" | `/code-review` |
 
-**MUST invoke (sub-agents):**
-| Trigger | Agent |
-|---------|-------|
-| After implementing TASK*.md | code-critic |
-| After code-critic APPROVE | architecture-critic |
-
 **SHOULD invoke:**
 | Trigger | Skill |
 |---------|-------|
 | Unclear requirements | `/brainstorm` |
-| Substantial feature (3+ files) | `/plan-implementation` |
+| Substantial feature | `/plan-implementation` |
 | PR has comments | `/address-pr` |
 | Large PR (>200 LOC) | `/minimize` |
 | User corrects 2+ times | `/autoskill` |
 
-**Invoke via Skill tool.**
-
-**Hook enforcement:**
-- `skill-eval.sh` (UserPromptSubmit) detects triggers and suggests MUST/SHOULD skills — these are reminders
-- `skill-marker.sh` (PostToolUse) creates `/tmp/claude-skill-{name}-{session}` markers when skills complete
-- `pr-gate.sh` (PreToolUse) blocks `gh pr create` unless all workflow markers exist — this is hard enforcement
-
-**Autoskill triggers:** "No, use X instead", "We always do it this way", same feedback 2+ times → ask about /autoskill at natural breakpoint.
+**Invoke via Skill tool.** Hook `skill-eval.sh` suggests skills; `pr-gate.sh` enforces markers.
 
 # Development Guidelines
 Refer to `~/.claude/rules/development.md`
