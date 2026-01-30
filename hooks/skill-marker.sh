@@ -62,6 +62,9 @@ case "$SKILL" in
   architecture-review)
     touch "/tmp/claude-skill-architecture-review-$SESSION_ID"
     ;;
+  plan-review)
+    touch "/tmp/claude-skill-plan-review-$SESSION_ID"
+    ;;
 esac
 
 echo '{}'

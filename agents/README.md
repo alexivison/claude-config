@@ -71,3 +71,14 @@ Sub-agents preserve context by offloading investigation/verification tasks.
 - `architecture-guidelines-common.md` (always loaded)
 - `architecture-guidelines-frontend.md` (React/TypeScript)
 - `architecture-guidelines-backend.md` (Go/Python/Node.js)
+
+## plan-reviewer
+**Use when:** After creating planning documents (SPEC.md, DESIGN.md, PLAN.md, TASK*.md).
+
+**Pattern:** Single-pass review. Main agent controls iteration loop (create → review → fix → review → ... → APPROVED).
+
+**Returns:** Verdict (APPROVE | REQUEST_CHANGES | NEEDS_DISCUSSION) with `[must]`/`[q]`/`[nit]` feedback.
+
+**Escalates to user:** Only on NEEDS_DISCUSSION or after 3 failed iterations.
+
+**Note:** Uses Sonnet. Preloads `/plan-review` skill. Validates document structure, completeness, and agent-executability.

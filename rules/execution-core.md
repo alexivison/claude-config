@@ -31,6 +31,9 @@ Shared execution sequence for all workflow skills. This is loaded on-demand by w
 | security-scanner | HIGH/CRITICAL | Ask user for approval | YES |
 | /pre-pr-verification | All pass | Create commit and PR | NO |
 | /pre-pr-verification | Failures | Fix and re-run | NO |
+| plan-reviewer | APPROVE | Create plan PR | NO |
+| plan-reviewer | REQUEST_CHANGES | Fix and re-run | NO |
+| plan-reviewer | NEEDS_DISCUSSION | Show findings, ask user | YES |
 
 ## Valid Pause Conditions
 
@@ -47,7 +50,7 @@ Only pause for:
 |-------------|----------|---------------|--------------|
 | Investigation | debug-investigator, log-analyzer | Always | Full findings, then AskUserQuestion |
 | Verification | test-runner, check-runner, security-scanner | Never (fix failures directly) | Summary only |
-| Iterative | code-critic | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
+| Iterative | code-critic, plan-reviewer | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
 | Advisory | architecture-critic | NEEDS_DISCUSSION only | Key findings (metrics, concerns) |
 
 **Advisory behavior**: On REQUEST_CHANGES, check existing TASK*.md for duplicates. If covered, note and skip. Otherwise ask about creating a task. PR proceeds regardless.

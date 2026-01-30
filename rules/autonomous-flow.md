@@ -8,8 +8,14 @@ When executing a task from TASK*.md, **do not stop until PR is created** (or a v
 
 ## The Flow
 
+**Code workflow (task-workflow, bugfix-workflow):**
 ```
 /write-tests → implement → checkboxes → code-critic → architecture-critic → verification → commit → PR
+```
+
+**Plan workflow (plan-workflow):**
+```
+/brainstorm (if needed) → /plan-implementation → plan-reviewer → plan PR
 ```
 
 ## Decision Matrix
@@ -34,12 +40,15 @@ These patterns indicate flow violation:
 
 ## Enforcement
 
-PR gate requires markers from:
+**Code PRs** require markers from:
 - `/pre-pr-verification` completion
 - `security-scanner` completion
 - `code-critic` APPROVE verdict
 - `test-runner` PASS verdict
 - `check-runner` PASS/CLEAN verdict
+
+**Plan PRs** (branch prefix `plan-*`) require:
+- `plan-reviewer` APPROVE verdict
 
 Missing markers → `gh pr create` blocked.
 
@@ -54,3 +63,6 @@ Created automatically by `agent-trace.sh`:
 | check-runner | PASS/CLEAN | `/tmp/claude-checks-passed-{session}` |
 | security-scanner | Any | `/tmp/claude-security-scanned-{session}` |
 | /pre-pr-verification | Any | `/tmp/claude-pr-verified-{session}` |
+| plan-reviewer | APPROVE | `/tmp/claude-plan-reviewer-{session}` |
+
+**Plan PRs** (branch suffix `-plan`) only require `plan-reviewer` marker. Code PRs require all other markers.

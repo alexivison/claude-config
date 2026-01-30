@@ -34,9 +34,10 @@ elif echo "$PROMPT_LOWER" | grep -qE '\bbug\b|\bbroken\b|\berror\b|\bnot work|\b
   SUGGESTION="MANDATORY: Invoke bugfix-workflow skill for debugging workflow."
   PRIORITY="must"
 
-# feature-workflow: Build/create keywords (fallback - most general)
+# plan-workflow: Build/create keywords (fallback - most general)
+# Note: task-workflow triggers first on TASK file references, so this catches new feature requests
 elif echo "$PROMPT_LOWER" | grep -qE '\bnew feature\b|\bimplement\b|\bbuild\b|\bcreate\b|\badd (a |the |new )?[a-z]+\b'; then
-  SUGGESTION="MANDATORY: Invoke feature-workflow skill for new feature workflow."
+  SUGGESTION="MANDATORY: Invoke plan-workflow skill for planning workflow."
   PRIORITY="must"
 
 # Other MUST skills
@@ -53,9 +54,6 @@ elif echo "$PROMPT_LOWER" | grep -qE '\bquality.?critical\b|\bimportant.*code\b|
   PRIORITY="should"
 elif echo "$PROMPT_LOWER" | grep -qE '\bsecurity\b|\bvulnerab\b|\baudit\b|\bsecret\b'; then
   SUGGESTION="RECOMMENDED: Run security-scanner agent for security analysis."
-  PRIORITY="should"
-elif echo "$PROMPT_LOWER" | grep -qE '\bplan (this|the|a) feature\b|\bbreak down\b|\bcreate spec\b|\bdesign (this|the)\b|/plan'; then
-  SUGGESTION="RECOMMENDED: Invoke /plan-implementation for structured planning."
   PRIORITY="should"
 elif echo "$PROMPT_LOWER" | grep -qE '\bpr comment|\breview(er)? (comment|feedback|request)|\baddress (the |this |pr )?feedback|\bfix.*comment|\brespond to.*review'; then
   SUGGESTION="RECOMMENDED: Invoke /address-pr to systematically address comments."

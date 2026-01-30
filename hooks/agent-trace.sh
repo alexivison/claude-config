@@ -119,4 +119,9 @@ if [ "$agent_type" = "check-runner" ]; then
   fi
 fi
 
+# plan-reviewer: only APPROVED creates marker
+if [ "$agent_type" = "plan-reviewer" ] && [ "$verdict" = "APPROVED" ]; then
+  touch "/tmp/claude-plan-reviewer-$session_id"
+fi
+
 exit 0

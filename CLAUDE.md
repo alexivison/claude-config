@@ -10,7 +10,7 @@
 | Scenario | Skill | Trigger |
 |----------|-------|---------|
 | Executing TASK*.md | `task-workflow` | Auto (skill-eval.sh) |
-| New feature request | `feature-workflow` | Auto (skill-eval.sh) |
+| Planning new feature | `plan-workflow` | Auto (skill-eval.sh) |
 | Bug fix / debugging | `bugfix-workflow` | Auto (skill-eval.sh) |
 
 Workflow skills load on-demand. See `~/.claude/skills/*/SKILL.md` for details.
@@ -39,6 +39,7 @@ Details in `~/.claude/agents/README.md`. Quick reference:
 | Analyze logs | log-analyzer |
 | After implementing | code-critic (MANDATORY) |
 | After code-critic | architecture-critic |
+| After creating plan | plan-reviewer (MANDATORY) |
 
 ## Verification Principle
 
