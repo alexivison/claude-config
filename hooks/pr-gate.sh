@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # PR Gate Hook - Enforces workflow completion before PR creation
 # Blocks `gh pr create` unless ALL required markers exist:
 #   - /tmp/claude-pr-verified-{session_id} (from /pre-pr-verification)

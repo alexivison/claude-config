@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Skill Marker & Trace Hook
 # - Creates markers when critical skills complete (for PR gate)
 # - Logs skill invocations to ~/.claude/logs/skill-trace.jsonl

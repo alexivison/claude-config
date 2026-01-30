@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Agent Observability Hook
 # Logs sub-agent invocations to ~/.claude/logs/agent-trace.jsonl
 #

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Session Cleanup Hook - Removes stale marker files
 # Cleans up markers older than 24 hours to prevent stale state
 #

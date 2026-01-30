@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Skill auto-invocation hook (UPGRADED)
 # Detects skill triggers and injects MANDATORY or SHOULD suggestions

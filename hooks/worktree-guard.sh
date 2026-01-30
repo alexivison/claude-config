@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Claude Code worktree guard hook
 # Blocks branch switching/creation in main worktree, suggests git worktree instead
