@@ -55,10 +55,11 @@ Parse the prompt to determine which CLI to use:
 codex review --uncommitted
 ```
 
-### Output Format
+### Output Format (VERDICT FIRST for marker detection)
 ```markdown
 ## Code Review (Codex)
 
+**Verdict**: **APPROVE** | **REQUEST_CHANGES** | **NEEDS_DISCUSSION**
 **Context**: {from prompt}
 
 ### Summary
@@ -69,9 +70,6 @@ codex review --uncommitted
 
 ### Nits
 - **file:line** - Minor suggestion
-
-### Verdict
-**APPROVE** | **REQUEST_CHANGES** | **NEEDS_DISCUSSION**
 ```
 
 ## Architecture Review (Codex)
@@ -87,18 +85,19 @@ git diff --stat HEAD~1 | tail -1  # If <50 lines → SKIP
 codex exec -s read-only "Analyze architecture of: $(git diff --name-only HEAD~1 | tr '\n' ' '). Focus on SRP violations, coupling, complexity."
 ```
 
-### Output Format
+### Output Format (VERDICT FIRST for marker detection)
 ```markdown
 ## Architecture Review (Codex)
 
+**Verdict**: **SKIP** | **APPROVE** | **REQUEST_CHANGES** | **NEEDS_DISCUSSION**
 **Mode**: Quick scan | Deep review
 
 ### Metrics
 | Metric | Value | Status |
 |--------|-------|--------|
 
-### Verdict
-**SKIP** | **APPROVE** | **REQUEST_CHANGES** | **NEEDS_DISCUSSION**
+### Analysis
+{Key findings if deep review}
 ```
 
 ## Design Decision (Codex)
