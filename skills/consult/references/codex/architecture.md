@@ -2,6 +2,13 @@
 
 **Trigger:** "architecture", "arch", "structure", "complexity"
 
+## Guidelines
+
+Load architecture guidelines before running Codex:
+- `~/.claude/skills/architecture-review/reference/architecture-guidelines-common.md` — Universal principles, thresholds
+- `~/.claude/skills/architecture-review/reference/architecture-guidelines-frontend.md` — React/TypeScript (if applicable)
+- `~/.claude/skills/architecture-review/reference/architecture-guidelines-backend.md` — Go/Python/Node (if applicable)
+
 **Path handling:** If prompt includes a path, cd there first for all git/codex commands.
 
 ## Step 1: Early Exit Check
@@ -10,14 +17,7 @@
 cd /path/to/worktree && git diff --stat HEAD~1 | tail -1  # If <50 lines total → SKIP
 ```
 
-## Step 2: Load Reference Guidelines
-
-Read appropriate guidelines based on changed file types:
-- `.tsx`, `.jsx`, React hooks → `~/.claude/skills/architecture-review/reference/architecture-guidelines-frontend.md`
-- `.go`, `.py`, backend `.ts` → `~/.claude/skills/architecture-review/reference/architecture-guidelines-backend.md`
-- Always load → `~/.claude/skills/architecture-review/reference/architecture-guidelines-common.md`
-
-## Step 3: Identify Related Files
+## Step 2: Identify Related Files
 
 Don't just review changed files. Find:
 - Files that import/are imported by changed files
@@ -25,11 +25,10 @@ Don't just review changed files. Find:
 - Interface definitions the changed code implements
 
 ```bash
-# Find imports in changed files
 cd /path/to/worktree && grep -h "import\|require\|from" $(git diff --name-only HEAD~1) | sort -u
 ```
 
-## Step 4: Run Comprehensive Review
+## Step 3: Run Comprehensive Review
 
 ```bash
 cd /path/to/worktree && codex exec -s read-only "
@@ -37,25 +36,14 @@ Architecture review with regression detection.
 
 Changed files: $(git diff --name-only HEAD~1 | tr '\n' ' ')
 
-Review scope:
-1. METRICS - Measure cyclomatic complexity, function length, file length, nesting depth for changed functions
-2. REGRESSION CHECK - Compare metrics before/after. Flag if:
-   - CC increases by >5 → [must]
-   - Any metric crosses warn→block threshold → [must]
-   - New code smell introduced → [must]
-3. CODE SMELLS - Check for: God class, Long function (>50 lines), Deep nesting (>4), Feature envy, Shotgun surgery
-4. STRUCTURAL - SRP violations, layer violations (presentation→data direct access)
-5. SURROUNDING CONTEXT - Do changes fit with related files? Any coupling issues introduced?
+Review scope (see guidelines for thresholds):
+1. METRICS - Cyclomatic complexity, function length, file length, nesting depth
+2. REGRESSION CHECK - Compare before/after, flag degradations as [must]
+3. CODE SMELLS - God class, Long function, Deep nesting, Feature envy
+4. STRUCTURAL - SRP violations, layer violations
+5. CONTEXT FIT - Do changes integrate well with surrounding code?
 
-Thresholds (from guidelines):
-| Metric | Warn [q] | Block [must] |
-|--------|----------|--------------|
-| Cyclomatic complexity | >10 | >15 |
-| Function length | >30 lines | >50 lines |
-| File length | >300 lines | >500 lines |
-| Nesting depth | >3 levels | >4 levels |
-
-Use [must], [q], [nit] severity labels.
+Use [must], [q], [nit] severity labels per guidelines.
 "
 ```
 
@@ -71,8 +59,6 @@ Use [must], [q], [nit] severity labels.
 ### Metrics Delta
 | File:Function | Metric | Before | After | Status |
 |---------------|--------|--------|-------|--------|
-| calc.ts:divide | CC | 2 | 4 | ✓ |
-| calc.ts:divide | Lines | 5 | 12 | ✓ |
 
 ### Regression Check
 {None detected | List regressions with [must] label}

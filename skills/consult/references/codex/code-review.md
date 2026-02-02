@@ -2,6 +2,12 @@
 
 **Trigger:** "review", "code review", "check code"
 
+## Guidelines
+
+Load review guidelines before running Codex:
+- `~/.claude/skills/code-review/reference/general.md` — Thresholds, quality checklist, severity labels
+- `~/.claude/skills/code-review/reference/frontend.md` — React/TypeScript patterns (if applicable)
+
 ## Command
 
 **Path handling:** If prompt includes a path (e.g., "in /path/to/worktree"), cd there first:
@@ -16,29 +22,12 @@ If no path specified, run in current directory:
 codex review --uncommitted
 ```
 
-## Review Checklist
+## Severity Labels
 
-### 1. Simplicity
-- Functions are short and single-responsibility
-- Nesting is shallow (uses early return)
-- No unnecessary complexity
-- Names clearly express intent
-
-### 2. Correct Library Usage
-- Follows documented library constraints
-- Uses library's recommended patterns
-- No deprecated APIs
-- Proper error handling
-
-### 3. Type Safety
-- All functions have type hints
-- Optional/Union used appropriately
-- No Any abuse
-
-### 4. Security
-- No hardcoded API keys/secrets
-- User input validated
-- No sensitive info in logs
+From guidelines:
+- **[must]** - Bugs, security, maintainability violations — blocks
+- **[q]** - Needs clarification — blocks until answered
+- **[nit]** - Style, minor suggestions — does not block
 
 ## Output Format (VERDICT FIRST for marker detection)
 
@@ -60,7 +49,6 @@ codex review --uncommitted
 
 ## Iteration Support
 
-For code review, support iteration loop:
 - Include `iteration` count in prompt
 - Include `previous_feedback` if iteration > 1
 - **Max iterations:** 3 → then NEEDS_DISCUSSION

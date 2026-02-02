@@ -2,37 +2,32 @@
 
 **Trigger:** "plan review", "review plan", "SPEC.md", "PLAN.md", "TASK*.md"
 
-Reviews planning documents for completeness, clarity, and agent-executability.
+## Guidelines
+
+Load plan review guidelines before running Codex:
+- `~/.claude/skills/plan-review/reference/plan-review-guidelines.md` — Required sections, detections, cross-document checks
 
 ## Command
 
 ```bash
 codex exec -s read-only "Review planning documents at {project_path}.
 
-Check for:
-1. SPEC.md - Clear requirements, acceptance criteria, user stories
-2. DESIGN.md - Architecture decisions, component design (if substantial feature)
-3. PLAN.md - Task breakdown, dependencies, no circular deps
-4. TASK*.md - Each task is self-contained, has clear acceptance criteria
+Check against guidelines for:
+1. SPEC.md - Goal, User Stories, Acceptance Criteria, Out of Scope
+2. DESIGN.md - Architecture Overview, Key Components, Data Flow, API, File Structure
+3. PLAN.md - Header, Task List, Dependencies
+4. TASK*.md - Issue, Goal, Context, Files, Steps, Verification, Acceptance Criteria
 
 Iteration: {N}
 Previous feedback: {if iteration > 1}
 
 Use severity labels:
-- [must] - Missing sections, circular deps, ambiguous reqs (blocks approval)
-- [q] - Questions needing clarification (blocks until answered)
+- [must] - Missing sections, circular deps, ambiguous reqs (blocks)
+- [q] - Needs clarification (blocks until answered)
 - [nit] - Minor improvements (does not block)
 
 Max iterations: 3 → then NEEDS_DISCUSSION"
 ```
-
-## Severity Labels
-
-| Label | Meaning | Blocks? |
-|-------|---------|---------|
-| `[must]` | Missing sections, circular deps, ambiguous reqs | Yes |
-| `[q]` | Questions needing clarification | Yes (until answered) |
-| `[nit]` | Minor improvements | No |
 
 ## Output Format (VERDICT FIRST for marker detection)
 
