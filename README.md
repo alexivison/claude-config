@@ -39,9 +39,7 @@ ln -sf ~/dotfiles/claude/* ~/.claude/
 | `check-runner` | Runs typecheck/lint, returns only errors (isolates verbose output) |
 | `log-analyzer` | Analyzes logs, returns error summary (isolates verbose output) |
 | `security-scanner` | Scans for secrets, vulnerabilities, OWASP issues before PR |
-| `debug-investigator` | Legacy: Systematic bug investigation (replaced by cli-orchestrator) |
-| `code-critic` | Legacy: Iterative code review (replaced by cli-orchestrator) |
-| `architecture-critic` | Legacy: Architecture review (replaced by cli-orchestrator) |
+| `plan-reviewer` | Reviews planning docs, ensures agent-executability |
 
 ## Skills
 
