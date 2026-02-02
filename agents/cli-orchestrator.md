@@ -38,11 +38,11 @@ Parse the prompt to determine which CLI to use:
 | "create plan", "plan feature" | Codex | `codex/plan-creation.md` |
 | "design", "approach", "trade-off" | Codex | `codex/design-decision.md` |
 | "debug", "error", "bug", "root cause" | Codex | `codex/debug.md` |
-| "research", "investigate", "best practices" | Gemini | `lib-research.md` |
-| "codebase", "repository", "understand" | Gemini | `codebase-analysis.md` |
-| "PDF", "video", "audio", "document" | Gemini | `multimodal.md` |
-| "library", "documentation", "docs" | Gemini | `lib-research.md` |
-| "search", "find latest", "2025/2026" | Gemini | `web-search.md` |
+| "research", "investigate", "best practices" | Gemini | `gemini/lib-research.md` |
+| "codebase", "repository", "understand" | Gemini | `gemini/codebase-analysis.md` |
+| "PDF", "video", "audio", "document" | Gemini | `gemini/multimodal.md` |
+| "library", "documentation", "docs" | Gemini | `gemini/lib-research.md` |
+| "search", "find latest", "2025/2026" | Gemini | `gemini/web-search.md` |
 
 **References:** `~/.claude/skills/consult/references/`
 
@@ -76,7 +76,7 @@ Detailed prompts and output formats in `~/.claude/skills/consult/references/code
 
 ## Gemini Modes
 
-Detailed prompts and output formats in `~/.claude/skills/consult/references/`:
+Detailed prompts and output formats in `~/.claude/skills/consult/references/gemini/`:
 
 | Mode | File | Trigger |
 |------|------|---------|
