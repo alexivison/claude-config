@@ -40,20 +40,27 @@ Before planning, clarify requirements:
 
 ## Planning Phase
 
-1. **Invoke `/plan-implementation`** to create documents:
-   - SPEC.md - Requirements and acceptance criteria
-   - DESIGN.md - Architecture and approach
-   - PLAN.md - Task breakdown with dependencies
-   - tasks/TASK*.md - Individual implementation tasks
+1. **Invoke cli-orchestrator for plan creation**:
+   - Prompt: "Create implementation plan for: {feature description}. Project path: doc/projects/{feature-name}/"
+   - Codex analyzes the codebase and generates all planning documents
+   - Returns documents in `<documents>` section
 
-2. **Wait for planning to complete** - User reviews documents
+2. **Write documents to project directory**:
+   - Parse the `<documents>` section from cli-orchestrator output
+   - Write each document to `doc/projects/{feature-name}/`:
+     - SPEC.md
+     - DESIGN.md (if included)
+     - PLAN.md
+     - tasks/TASK-01.md, TASK-02.md, etc.
+
+3. **Show summary to user** - Brief overview of what was created
 
 ## Validation Phase
 
 Execute continuously - **no stopping until PR is created**.
 
 ```
-cli-orchestrator (plan review) (iteration loop) -> PR
+cli-orchestrator (plan creation) -> write docs -> cli-orchestrator (plan review) (iteration loop) -> PR
 ```
 
 ### Step-by-Step

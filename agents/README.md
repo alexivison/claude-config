@@ -3,10 +3,10 @@
 Sub-agents preserve context by offloading investigation/verification tasks.
 
 ## cli-orchestrator
-**Use when:** Deep reasoning, code review, debugging, plan review, architecture analysis, or research via external CLI tools (Codex, Gemini).
+**Use when:** Deep reasoning, code review, debugging, planning, architecture analysis, or research via external CLI tools (Codex, Gemini).
 
 **Routes to appropriate CLI based on prompt:**
-- "review", "plan review", "design", "debug", "investigate", "architecture" → **Codex CLI** (reasoning)
+- "review", "create plan", "plan review", "design", "debug", "investigate", "architecture" → **Codex CLI** (reasoning)
 - "research", "codebase", "PDF", "library" → **Gemini CLI** (research/multimodal)
 
 **Modes:**
@@ -14,7 +14,8 @@ Sub-agents preserve context by offloading investigation/verification tasks.
 |------|---------|-------------|
 | Code Review | "review" | `codex review --uncommitted` |
 | Architecture | "arch", "structure" | `codex exec -s read-only "Analyze architecture..."` |
-| Plan Review | "plan review", "SPEC", "PLAN.md" | `codex exec -s read-only "Review planning documents..."` |
+| Plan Creation | "create plan", "plan feature" | `codex exec -s read-only "Create implementation plan..."` |
+| Plan Review | "plan review" | `codex exec -s read-only "Review planning documents..."` |
 | Debug Investigation | "debug", "investigate", "bug" | `codex exec -s read-only "Investigate bug..."` |
 | Design Decision | "design", "compare" | `codex exec -s read-only "Analyze trade-offs..."` |
 | Research | "research" | `gemini -p "Research..."` |
