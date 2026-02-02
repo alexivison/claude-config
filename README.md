@@ -46,7 +46,6 @@ ln -sf ~/dotfiles/claude/* ~/.claude/
 
 | Skill | Triggers |
 |-------|----------|
-| `brainstorm` | New features with unclear requirements, multiple approaches |
 | `plan-implementation` | Feature planning, creating specs |
 | `minimize` | Identifies bloat and unnecessary complexity |
 | `address-pr` | "address PR comments", "check feedback" |

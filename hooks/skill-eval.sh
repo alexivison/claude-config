@@ -61,9 +61,6 @@ elif echo "$PROMPT_LOWER" | grep -qE '\bpr comment|\breview(er)? (comment|feedba
 elif echo "$PROMPT_LOWER" | grep -qE '\bbloat\b|\btoo (big|large|much)\b|\bminimize\b|\bsimplify\b|\bover.?engineer'; then
   SUGGESTION="RECOMMENDED: Invoke /minimize to identify unnecessary complexity."
   PRIORITY="should"
-elif echo "$PROMPT_LOWER" | grep -qE '\bunclear\b|\bmultiple (approach|option|way)|\bnot sure (how|which|what)\b|\bbest (approach|way)\b|\bbrainstorm\b|\bhow should (we|i)\b'; then
-  SUGGESTION="RECOMMENDED: Invoke /brainstorm to capture context before planning."
-  PRIORITY="should"
 elif echo "$PROMPT_LOWER" | grep -qE '\blearn from (this|session)\b|\bremember (this|that)\b|\bsave (this |that |)preference\b|\bextract pattern\b|/autoskill'; then
   SUGGESTION="RECOMMENDED: Invoke /autoskill to learn from this session."
   PRIORITY="should"

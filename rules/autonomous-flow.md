@@ -15,7 +15,7 @@ When executing a task from TASK*.md, **do not stop until PR is created** (or a v
 
 **Plan workflow (plan-workflow):**
 ```
-/brainstorm (if needed) → cli-orchestrator (plan creation) → cli-orchestrator (plan review) → plan PR
+cli-orchestrator (plan creation) → cli-orchestrator (plan review) → plan PR
 ```
 
 ## Decision Matrix

@@ -58,7 +58,6 @@ Evidence before claims. See `~/.claude/rules/execution-core.md` for full require
 **SHOULD invoke:**
 | Trigger | Skill |
 |---------|-------|
-| Unclear requirements | `/brainstorm` |
 | Substantial feature | `/plan-implementation` |
 | PR has comments | `/address-pr` |
 | Large PR (>200 LOC) | `/minimize` |

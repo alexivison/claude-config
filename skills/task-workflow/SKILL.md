@@ -14,7 +14,7 @@ Execute tasks from TASK*.md files with the full autonomous workflow.
 
 1. **Create worktree first** — `git worktree add ../repo-branch-name -b branch-name`
 2. **Does task require tests?** → invoke `/write-tests` FIRST
-3. **Requirements unclear?** → `/brainstorm` or ask user
+3. **Requirements unclear?** → Ask user for clarification
 4. **Will this bloat into a large PR?** → Split into smaller tasks
 
 State which items were checked before proceeding.

@@ -18,10 +18,10 @@ After the plan PR is merged, use `task-workflow` to implement each task.
 
 Before planning, clarify requirements:
 
-1. **Requirements unclear?** -> Invoke `/brainstorm` -> `[wait for user]`
+1. **Requirements unclear?** -> Use AskUserQuestion to clarify -> `[wait for user]`
 2. **Requirements clear** -> Proceed to setup
 
-`[wait]` = Show findings, use AskUserQuestion, wait for user input.
+`[wait]` = Ask clarifying questions, wait for user input.
 
 ## Setup Phase
 
