@@ -2,13 +2,6 @@
 
 **Trigger:** "architecture", "arch", "structure", "complexity"
 
-## Guidelines
-
-Load architecture guidelines before running Codex:
-- `~/.claude/skills/architecture-review/reference/architecture-guidelines-common.md` — Universal principles, thresholds
-- `~/.claude/skills/architecture-review/reference/architecture-guidelines-frontend.md` — React/TypeScript (if applicable)
-- `~/.claude/skills/architecture-review/reference/architecture-guidelines-backend.md` — Go/Python/Node (if applicable)
-
 **Path handling:** If prompt includes a path, cd there first for all git/codex commands.
 
 ## Step 1: Early Exit Check

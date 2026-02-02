@@ -2,12 +2,6 @@
 
 **Trigger:** "review", "code review", "check code"
 
-## Guidelines
-
-Load review guidelines before running Codex:
-- `~/.claude/skills/code-review/reference/general.md` — Thresholds, quality checklist, severity labels
-- `~/.claude/skills/code-review/reference/frontend.md` — React/TypeScript patterns (if applicable)
-
 ## Command
 
 **Path handling:** If prompt includes a path (e.g., "in /path/to/worktree"), cd there first:

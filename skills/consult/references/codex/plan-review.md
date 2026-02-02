@@ -2,11 +2,6 @@
 
 **Trigger:** "plan review", "review plan", "SPEC.md", "PLAN.md", "TASK*.md"
 
-## Guidelines
-
-Load plan review guidelines before running Codex:
-- `~/.claude/skills/plan-review/reference/plan-review-guidelines.md` — Required sections, detections, cross-document checks
-
 ## Command
 
 ```bash
