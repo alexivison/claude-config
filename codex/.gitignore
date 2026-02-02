@@ -1,0 +1,12 @@
+# Credentials
+auth.json
+
+# Local state
+history.jsonl
+log/
+sessions/
+version.json
+
+# System-generated
+skills/.system/
+rules/
