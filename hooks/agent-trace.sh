@@ -107,6 +107,21 @@ if [ "$agent_type" = "code-critic" ] && [ "$verdict" = "APPROVED" ]; then
   touch "/tmp/claude-code-critic-$session_id"
 fi
 
+# cli-orchestrator: unified CLI agent - detect task type from output
+if [ "$agent_type" = "cli-orchestrator" ]; then
+  # Detect task type from output headers
+  if echo "$response_text" | grep -qi "Code Review (Codex)\|## Code Review"; then
+    # Code review mode - only APPROVE creates marker
+    if [ "$verdict" = "APPROVED" ]; then
+      touch "/tmp/claude-code-critic-$session_id"
+    fi
+  elif echo "$response_text" | grep -qi "Architecture Review (Codex)\|## Architecture Review"; then
+    # Architecture mode - any completion creates marker
+    touch "/tmp/claude-architecture-reviewed-$session_id"
+  fi
+  # Gemini tasks (research, etc.) don't create PR gate markers
+fi
+
 # test-runner: only PASS creates marker
 if [ "$agent_type" = "test-runner" ] && [ "$verdict" = "PASS" ]; then
   touch "/tmp/claude-tests-passed-$session_id"

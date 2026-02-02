@@ -72,6 +72,23 @@ Sub-agents preserve context by offloading investigation/verification tasks.
 - `architecture-guidelines-frontend.md` (React/TypeScript)
 - `architecture-guidelines-backend.md` (Go/Python/Node.js)
 
+## cli-orchestrator
+**Use when:** Deep reasoning or research via external CLI tools (Codex, Gemini).
+
+**Routes to appropriate CLI based on prompt:**
+- "review", "design", "debug", "architecture" → **Codex CLI** (reasoning)
+- "research", "codebase", "PDF", "library" → **Gemini CLI** (research/multimodal)
+
+**Pattern:** Subagent routes to CLI, returns concise summary to preserve main context.
+
+**Returns:** Verdict or findings with structured analysis.
+
+**Creates markers (Codex tasks only):**
+- Code Review + APPROVE → `/tmp/claude-code-critic-{session}`
+- Architecture + any → `/tmp/claude-architecture-reviewed-{session}`
+
+**Note:** Uses Sonnet. Keeps verbose CLI output isolated. Extensible to other CLIs.
+
 ## plan-reviewer
 **Use when:** After creating planning documents (SPEC.md, DESIGN.md, PLAN.md, TASK*.md).
 

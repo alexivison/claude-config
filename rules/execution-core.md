@@ -8,6 +8,11 @@ Shared execution sequence for all workflow skills. This is loaded on-demand by w
 /write-tests → implement → checkboxes → code-critic → architecture-critic → verification → commit → PR
 ```
 
+**CLI Alternative:** `cli-orchestrator` can replace critics (routes to Codex/Gemini):
+```
+/write-tests → implement → checkboxes → cli-orchestrator (review) → cli-orchestrator (arch) → verification → commit → PR
+```
+
 ## Decision Matrix
 
 | Step | Outcome | Next Action | Pause? |
@@ -19,9 +24,16 @@ Shared execution sequence for all workflow skills. This is loaded on-demand by w
 | code-critic | REQUEST_CHANGES | Fix and re-run | NO |
 | code-critic | NEEDS_DISCUSSION | Show findings, ask user | YES |
 | code-critic | 3rd failure | Document attempts, ask user | YES |
+| cli-orchestrator (review) | APPROVE | Run cli-orchestrator (arch) | NO |
+| cli-orchestrator (review) | REQUEST_CHANGES | Fix and re-run | NO |
+| cli-orchestrator (review) | NEEDS_DISCUSSION | Show findings, ask user | YES |
+| cli-orchestrator (review) | 3rd failure | Document attempts, ask user | YES |
 | architecture-critic | APPROVE/SKIP | Run verification | NO |
 | architecture-critic | REQUEST_CHANGES | Note for future task, continue | NO |
 | architecture-critic | NEEDS_DISCUSSION | Show findings, ask user | YES |
+| cli-orchestrator (arch) | APPROVE/SKIP | Run verification | NO |
+| cli-orchestrator (arch) | REQUEST_CHANGES | Note for future task, continue | NO |
+| cli-orchestrator (arch) | NEEDS_DISCUSSION | Show findings, ask user | YES |
 | test-runner | PASS | Continue to check-runner | NO |
 | test-runner | FAIL | Fix and re-run | NO |
 | check-runner | PASS/CLEAN | Run security-scanner | NO |
@@ -50,8 +62,8 @@ Only pause for:
 |-------------|----------|---------------|--------------|
 | Investigation | debug-investigator, log-analyzer | Always | Full findings, then AskUserQuestion |
 | Verification | test-runner, check-runner, security-scanner | Never (fix failures directly) | Summary only |
-| Iterative | code-critic, plan-reviewer | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
-| Advisory | architecture-critic | NEEDS_DISCUSSION only | Key findings (metrics, concerns) |
+| Iterative | code-critic, cli-orchestrator (review), plan-reviewer | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
+| Advisory | architecture-critic, cli-orchestrator (arch) | NEEDS_DISCUSSION only | Key findings (metrics, concerns) |
 
 **Advisory behavior**: On REQUEST_CHANGES, check existing TASK*.md for duplicates. If covered, note and skip. Otherwise ask about creating a task. PR proceeds regardless.
 

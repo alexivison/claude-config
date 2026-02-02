@@ -13,6 +13,11 @@ When executing a task from TASK*.md, **do not stop until PR is created** (or a v
 /write-tests → implement → checkboxes → code-critic → architecture-critic → verification → commit → PR
 ```
 
+**CLI alternative (routes to Codex/Gemini):**
+```
+/write-tests → implement → checkboxes → cli-orchestrator (review) → cli-orchestrator (arch) → verification → commit → PR
+```
+
 **Plan workflow (plan-workflow):**
 ```
 /brainstorm (if needed) → /plan-implementation → plan-reviewer → plan PR
@@ -43,7 +48,7 @@ These patterns indicate flow violation:
 **Code PRs** require markers from:
 - `/pre-pr-verification` completion
 - `security-scanner` completion
-- `code-critic` APPROVE verdict
+- `code-critic` OR `codex-critic` APPROVE verdict
 - `test-runner` PASS verdict
 - `check-runner` PASS/CLEAN verdict
 
@@ -59,9 +64,12 @@ Created automatically by `agent-trace.sh`:
 | Agent | Verdict | Marker |
 |-------|---------|--------|
 | code-critic | APPROVE | `/tmp/claude-code-critic-{session}` |
+| cli-orchestrator (review) | APPROVE | `/tmp/claude-code-critic-{session}` (same marker) |
 | test-runner | PASS | `/tmp/claude-tests-passed-{session}` |
 | check-runner | PASS/CLEAN | `/tmp/claude-checks-passed-{session}` |
 | security-scanner | Any | `/tmp/claude-security-scanned-{session}` |
+| architecture-critic | Any | `/tmp/claude-architecture-reviewed-{session}` |
+| cli-orchestrator (arch) | Any | `/tmp/claude-architecture-reviewed-{session}` (same marker) |
 | /pre-pr-verification | Any | `/tmp/claude-pr-verified-{session}` |
 | plan-reviewer | APPROVE | `/tmp/claude-plan-reviewer-{session}` |
 
