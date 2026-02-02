@@ -21,10 +21,11 @@ metadata:
 | Architecture | Codex | Structural patterns, complexity |
 | Design decisions | Codex | Trade-off analysis |
 | Debugging | Codex | Root cause analysis |
-| Research | Gemini | 1M token context, web search |
+| Research | Gemini | 1M token context |
 | Codebase analysis | Gemini | Repository-wide understanding |
 | Multimodal (PDF/video) | Gemini | Native file processing |
 | Library docs | Gemini | Documentation research |
+| Web search | Gemini | Google Search grounding, latest info |
 
 ## Context Management (CRITICAL)
 
@@ -77,6 +78,9 @@ prompt: "Analyze this repository's architecture and key modules"
 
 # Library docs → Gemini
 prompt: "Research the httpx library: features, constraints, patterns"
+
+# Web search → Gemini
+prompt: "Search for the latest React 19 features and breaking changes in 2026"
 ```
 
 ### Via Skill (User-invoked)
@@ -89,6 +93,7 @@ prompt: "Research the httpx library: features, constraints, patterns"
 /consult research {topic} # Research via Gemini
 /consult codebase        # Codebase analysis via Gemini
 /consult lib {library}   # Library research via Gemini
+/consult search {query}  # Web search via Gemini
 ```
 
 ## Integration with Workflow

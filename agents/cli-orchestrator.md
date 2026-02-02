@@ -42,6 +42,7 @@ Parse the prompt to determine which CLI to use:
 | "codebase", "repository", "understand" | Gemini | Large codebase analysis |
 | "PDF", "video", "audio", "document" | Gemini | Multimodal |
 | "library", "documentation", "docs" | Gemini | Library research |
+| "search", "find latest", "current", "2025/2026" | Gemini | Web search (Google grounding) |
 
 **Default:** If unclear, use Codex for implementation-related, Gemini for research-related.
 
@@ -420,17 +421,53 @@ Returns shorter format:
 
 # GEMINI MODES
 
+## Output Persistence (CRITICAL)
+
+**Save all Gemini research to `~/.claude/research/` for future reference.**
+
+After running Gemini, save the full output:
+```bash
+# Generate filename
+FILENAME="~/.claude/research/{topic}-research-$(date +%Y-%m-%d).md"
+
+# Save output
+gemini -p "..." 2>/dev/null | tee "$FILENAME"
+```
+
+Return concise summary to main agent, but preserve full output in research folder.
+
+## Reference Templates
+
+Detailed templates available in `~/.claude/skills/consult/references/`:
+- `lib-research.md` — Library research template
+- `codebase-analysis.md` — Repository analysis template
+- `multimodal.md` — PDF/video/audio templates
+
 ## Research (Gemini)
 
 **Trigger:** "research", "investigate", "best practices", "how to"
 
 ```bash
-gemini -p "Research: {topic}. Include: common patterns, library recommendations, performance considerations, security concerns, code examples." 2>/dev/null
+gemini -p "Research: {topic}.
+
+Include:
+- Common patterns and anti-patterns
+- Library recommendations (with comparison)
+- Performance considerations
+- Security concerns
+- Code examples (2025-2026 best practices)
+
+Format as structured markdown." 2>/dev/null
 ```
+
+**Save to:** `~/.claude/research/{topic}-research-{date}.md`
 
 ### Output Format
 ```markdown
 ## Research (Gemini)
+
+**Topic**: {topic}
+**Saved to**: ~/.claude/research/{filename}.md
 
 ### Key Findings
 - {Finding 1}
@@ -443,15 +480,75 @@ gemini -p "Research: {topic}. Include: common patterns, library recommendations,
 
 ### Sources
 - {Reference}
+
+(Full output saved to research folder)
+```
+
+## Library Research (Gemini)
+
+**Trigger:** "library", "package", "documentation", "docs for"
+
+See full template: `~/.claude/skills/consult/references/lib-research.md`
+
+```bash
+gemini -p "Research the library '{library_name}' comprehensively.
+
+Provide:
+- Basic info (version, license, install)
+- Core features with examples
+- Constraints and gotchas
+- Common patterns
+- Troubleshooting
+
+Format as structured markdown." 2>/dev/null
+```
+
+**Save to:** `~/.claude/research/{library}-research-{date}.md`
+
+### Output Format
+```markdown
+## Library Research (Gemini)
+
+**Library**: {name}
+**Saved to**: ~/.claude/research/{filename}.md
+
+### Overview
+- Version: {version}
+- Install: `{command}`
+- Docs: {url}
+
+### Key Features
+- {Feature 1}
+
+### Constraints
+- {Limitation}
+
+### Usage Pattern
+```code
+{example}
+```
+
+(Full output saved to research folder)
 ```
 
 ## Codebase Analysis (Gemini)
 
 **Trigger:** "codebase", "repository", "understand", "overview"
 
+**Key flag:** `--include-directories .` gives Gemini full codebase context (1M token window)
+
 ```bash
-gemini -p "Analyze this repository: architecture overview, key modules, data flow, entry points, patterns to follow." --include-directories . 2>/dev/null
+gemini -p "Analyze this repository:
+
+1. Architecture overview
+2. Key modules and responsibilities
+3. Data flow between components
+4. Entry points and extension points
+5. Patterns to follow
+6. Areas of concern" --include-directories . 2>/dev/null
 ```
+
+**Save to:** `~/.claude/research/{repo}-codebase-{date}.md`
 
 ### Output Format
 ```markdown
@@ -472,13 +569,27 @@ gemini -p "Analyze this repository: architecture overview, key modules, data flo
 
 **Trigger:** "PDF", "video", "audio", "document", "analyze file"
 
+See full templates: `~/.claude/skills/consult/references/multimodal.md`
+
 ```bash
-gemini -p "{extraction prompt}" < /path/to/file 2>/dev/null
+# PDF analysis
+gemini -p "Analyze this PDF: extract key concepts, API specs, code examples, constraints." < /path/to/doc.pdf 2>/dev/null
+
+# Video analysis
+gemini -p "Analyze this video: main topics, key points with timestamps, code shown." < /path/to/video.mp4 2>/dev/null
+
+# Audio/meeting analysis
+gemini -p "Analyze this recording: decisions made, action items, open questions." < /path/to/meeting.mp3 2>/dev/null
 ```
+
+**Save to:** `~/.claude/research/{descriptive-name}-{date}.md`
 
 ### Output Format
 ```markdown
 ## Document Analysis (Gemini)
+
+**File**: {filename}
+**Saved to**: ~/.claude/research/{filename}.md
 
 ### Summary
 {Key content}
@@ -486,34 +597,43 @@ gemini -p "{extraction prompt}" < /path/to/file 2>/dev/null
 ### Extracted Items
 - {Item 1}
 - {Item 2}
+
+(Full output saved to research folder)
 ```
 
-## Library Research (Gemini)
+## Web Search (Gemini)
 
-**Trigger:** "library", "package", "documentation", "docs for"
+**Trigger:** "search", "find", "latest", "current", "2025", "2026"
+
+Gemini has Google Search grounding for up-to-date information.
 
 ```bash
-gemini -p "Research {library}: official docs, installation, core features, constraints, common patterns, troubleshooting." 2>/dev/null
+gemini -p "Search for: {query}
+
+Find the latest information (2025-2026) about:
+- {specific aspect 1}
+- {specific aspect 2}
+
+Include sources and links." 2>/dev/null
 ```
+
+**Save to:** `~/.claude/research/{topic}-search-{date}.md`
 
 ### Output Format
 ```markdown
-## Library Research (Gemini)
+## Web Search (Gemini)
 
-### Overview
-- **Version**: {version}
-- **Install**: `{command}`
+**Query**: {query}
+**Saved to**: ~/.claude/research/{filename}.md
 
-### Key Features
-- {Feature 1}
+### Results
+- {Finding 1} ([source](url))
+- {Finding 2} ([source](url))
 
-### Constraints
-- {Limitation}
+### Summary
+{Key takeaways}
 
-### Usage Pattern
-```code
-{example}
-```
+(Full output saved to research folder)
 ```
 
 ---
