@@ -34,8 +34,17 @@ Load the appropriate reference file(s) for the file type. Calculate the metrics 
 
 ### Step 3: Decision
 
-- **ALL metrics within thresholds** → Return `SKIP` immediately
-- **ANY threshold exceeded** → Proceed to deep analysis
+Use **strict thresholds** for early-exit:
+
+| Metric | SKIP if below | Deep review if above |
+|--------|---------------|----------------------|
+| Cyclomatic complexity | ≤8 | >8 |
+| File length | ≤300 lines | >300 lines |
+| Function length | ≤30 lines | >30 lines |
+| Nesting depth | ≤3 | >3 |
+
+- **ALL metrics below SKIP threshold** → Return `SKIP` immediately
+- **ANY metric above deep review threshold** → Proceed to deep analysis
 
 ### Step 4: Deep Analysis (only if triggered)
 
@@ -110,8 +119,9 @@ Apply the patterns and smells from the reference files. Focus on:
 
 ## Guidelines
 
-- Be pragmatic — not every threshold violation is a problem
-- Consider the file's purpose when analyzing (a complex state machine hook may be intentional)
+- **Be harsh on maintainability** — threshold violations require justification or refactoring
+- Complexity must be justified by genuine requirements, not convenience
 - Provide specific, actionable recommendations with checkboxes
 - Reference the specific patterns/smells from the guidelines you're detecting
 - On REQUEST_CHANGES, the main agent will ask user if they want a follow-up refactor task
+- If metrics exceed block thresholds (see skill reference), always REQUEST_CHANGES

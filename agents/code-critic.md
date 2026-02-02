@@ -31,9 +31,11 @@ Use the standard labels from code-review:
 
 | Label | Meaning | Iteration Behavior |
 |-------|---------|-------------------|
-| `[must]` | Bugs, security issues, violations | Blocks APPROVED verdict |
+| `[must]` | Bugs, security issues, maintainability violations | Blocks APPROVED verdict |
 | `[q]` | Questions needing clarification | Blocks until answered |
 | `[nit]` | Minor improvements, style | Does NOT block approval |
+
+**Be harsh on maintainability.** Apply the thresholds from the code-review skill strictly — no exceptions.
 
 ## Iterative Refinement Loop
 
@@ -74,7 +76,7 @@ APPROVED   REQUEST_CHANGES            │
 - First, verify previous `[must]` issues are fixed
 - Check if `[q]` questions were addressed
 - Look for any NEW issues introduced by fixes
-- Be pragmatic - don't raise new nits on iteration 3
+- Don't raise new `[nit]` issues on iteration 3 (but `[must]` issues always block, even on iteration 3)
 
 **Max iterations:** 3
 - After 3 iterations without APPROVED, return NEEDS_DISCUSSION

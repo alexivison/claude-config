@@ -1,194 +1,145 @@
 # Plan Review Reference
 
-Detailed checklists and quality criteria for reviewing planning documents.
+Rules for reviewing planning documents. Use `[must]`, `[q]`, `[nit]` labels.
 
 ---
 
-## Document Checklists
+## Severity Labels
 
-### SPEC.md
-
-**Required sections:**
-- [ ] **Goal/Objective** - One sentence describing what this achieves
-- [ ] **User Stories / Requirements** - What users need to accomplish
-- [ ] **Acceptance Criteria** - Measurable, verifiable conditions
-- [ ] **Out of Scope** - What this explicitly does NOT cover
-
-**Quality checks:**
-- [ ] Acceptance criteria are testable (not vague like "should be fast")
-- [ ] No implementation details (that belongs in DESIGN.md)
-- [ ] Clear success metrics or exit conditions
-- [ ] Each requirement has at least one acceptance criterion
-- [ ] Requirements are prioritized (must-have vs nice-to-have)
-
-**Common issues:**
-| Issue | Severity | Example |
-|-------|----------|---------|
-| Missing acceptance criteria | `[must]` | "Support user login" without success conditions |
-| Vague requirements | `[must]` | "System should be performant" |
-| Implementation in spec | `[nit]` | "Use Redis for caching" in SPEC |
-| Scope creep | `[q]` | Unrelated features bundled together |
+| Label | Meaning | Blocks |
+|-------|---------|--------|
+| `[must]` | Missing sections, circular deps, ambiguous reqs | Yes |
+| `[q]` | Needs clarification | Yes (until answered) |
+| `[nit]` | Formatting, minor suggestions | No |
 
 ---
 
-### DESIGN.md
+## SPEC.md
 
-**Required sections:**
-- [ ] **Architecture Overview** - High-level approach (2-3 paragraphs)
-- [ ] **Key Components** - Major modules/services involved
-- [ ] **Data Flow** - How data moves through the system
-- [ ] **API/Interface Design** - Public interfaces if applicable
-- [ ] **File Structure** - What files will be created/modified
+### Required Sections
 
-**Quality checks:**
-- [ ] References SPEC.md for requirements traceability
-- [ ] Patterns match existing codebase conventions
-- [ ] Dependencies identified and reasonable
-- [ ] No over-engineering (matches scope of SPEC)
-- [ ] Error handling strategy defined
-- [ ] Security considerations addressed (if applicable)
+| Section | Check |
+|---------|-------|
+| Goal/Objective | One sentence describing what this achieves |
+| User Stories / Requirements | What users need to accomplish |
+| Acceptance Criteria | Measurable, verifiable conditions |
+| Out of Scope | What this explicitly does NOT cover |
 
-**Common issues:**
-| Issue | Severity | Example |
-|-------|----------|---------|
-| No SPEC reference | `[must]` | Design without requirements traceability |
-| Pattern mismatch | `[must]` | Using Redux in a Zustand codebase |
-| Missing data flow | `[must]` | Components without clear data sources |
-| Over-engineering | `[q]` | Microservices for a simple feature |
+### Detections
+
+| Issue | Severity |
+|-------|----------|
+| Missing acceptance criteria | `[must]` |
+| Vague requirements ("should be fast") | `[must]` |
+| Implementation details in spec | `[nit]` |
+| Unrelated features bundled | `[q]` |
+| Requirement without acceptance criterion | `[must]` |
 
 ---
 
-### PLAN.md
+## DESIGN.md
 
-**Required header:**
+### Required Sections
+
+| Section | Check |
+|---------|-------|
+| Architecture Overview | High-level approach (2-3 paragraphs) |
+| Key Components | Major modules/services involved |
+| Data Flow | How data moves through the system |
+| API/Interface Design | Public interfaces if applicable |
+| File Structure | Files to be created/modified |
+
+### Detections
+
+| Issue | Severity |
+|-------|----------|
+| No SPEC.md reference | `[must]` |
+| Pattern mismatch with codebase | `[must]` |
+| Missing data flow | `[must]` |
+| Over-engineering for scope | `[q]` |
+
+---
+
+## PLAN.md
+
+### Required Header
+
 ```markdown
 # <Feature Name> Implementation Plan
 
-> **Goal:** [One sentence — what this achieves]
->
-> **Architecture:** [2-3 sentences — key technical approach]
->
-> **Tech Stack:** [Relevant technologies]
->
+> **Goal:** [One sentence]
+> **Architecture:** [2-3 sentences]
+> **Tech Stack:** [Technologies]
 > **Specification:** [SPEC.md](./SPEC.md) | **Design:** [DESIGN.md](./DESIGN.md)
 ```
 
-**Required sections:**
-- [ ] **Plan Header** - As specified above
-- [ ] **Task List** - Links to TASK*.md files with status checkboxes
-- [ ] **Dependencies** - Order and blockers between tasks
-- [ ] **Critical Path** - Which tasks block others
+### Required Sections
 
-**Quality checks:**
-- [ ] Each task has clear deliverable
-- [ ] No circular dependencies
-- [ ] Critical path identified
-- [ ] Tasks are ordered logically (dependencies first)
-- [ ] Total scope matches SPEC (no missing/extra work)
+| Section | Check |
+|---------|-------|
+| Plan Header | As specified above |
+| Task List | Links to TASK*.md with checkboxes |
+| Dependencies | Order and blockers between tasks |
 
-**Common issues:**
-| Issue | Severity | Example |
-|-------|----------|---------|
-| Missing header | `[must]` | No goal/architecture summary |
-| Circular deps | `[must]` | TASK1 needs TASK2, TASK2 needs TASK1 |
-| Missing tasks | `[must]` | SPEC requirement not covered by any task |
-| Unclear order | `[q]` | No dependency information |
+### Detections
+
+| Issue | Severity |
+|-------|----------|
+| Missing header | `[must]` |
+| Circular dependencies | `[must]` |
+| SPEC requirement not covered by any task | `[must]` |
+| No dependency information | `[q]` |
 
 ---
 
-### TASK*.md
+## TASK*.md
 
-**Required sections:**
-- [ ] **Issue** - Link to issue tracker or descriptive slug
-- [ ] **Goal** - What this specific task accomplishes
-- [ ] **Required Context** - Files to read first
-- [ ] **Files to Modify** - Exact paths with actions
-- [ ] **Steps** - Checkbox list of implementation steps
-- [ ] **Verification** - Commands to run for validation
-- [ ] **Acceptance Criteria** - How to know task is complete
+### Required Sections
 
-**Quality checks:**
-- [ ] Steps are atomic (one action per checkbox)
-- [ ] No implicit assumptions about previous tasks
-- [ ] Verification commands are runnable
-- [ ] ~200 lines implementation code (tests excluded)
-- [ ] Touches <= 5 files (or split the task)
-- [ ] All file paths are absolute or project-relative
-- [ ] Test requirements included in same task
+| Section | Check |
+|---------|-------|
+| Issue | Link to tracker or descriptive slug |
+| Goal | What this task accomplishes |
+| Required Context | Files to read first |
+| Files to Modify | Exact paths with actions |
+| Steps | Checkbox list of implementation steps |
+| Verification | Commands to run for validation |
+| Acceptance Criteria | How to know task is complete |
 
-**Common issues:**
-| Issue | Severity | Example |
-|-------|----------|---------|
-| Missing verification | `[must]` | No way to confirm completion |
-| Too large | `[must]` | 500+ lines, 10+ files |
-| Implicit deps | `[must]` | "Assumes auth is set up" without listing |
-| Vague steps | `[q]` | "Implement the feature" |
-| Missing context | `[nit]` | No files listed to read first |
+### Detections
 
----
+| Issue | Severity |
+|-------|----------|
+| Missing verification | `[must]` |
+| Too large (>500 lines, >10 files) | `[must]` |
+| Implicit deps ("assumes auth is set up") | `[must]` |
+| Vague steps ("implement the feature") | `[q]` |
+| Missing context files | `[nit]` |
 
-## Quality Criteria
+### Size Limits
 
-### Measurability
-
-Every requirement must have verifiable acceptance criteria:
-
-| Bad | Good |
-|-----|------|
-| "System should be responsive" | "API response time < 200ms p95" |
-| "Easy to use" | "User can complete checkout in < 3 clicks" |
-| "Secure" | "All inputs sanitized, auth required for /api/*" |
-
-### No Circular Dependencies
-
-Tasks cannot depend on each other cyclically:
-
-```
-# Bad: Circular
-TASK1 (auth) → needs TASK2 (user model)
-TASK2 (user model) → needs TASK1 (auth)
-
-# Good: Linear
-TASK1 (user model) → foundation
-TASK2 (auth) → depends on TASK1
-```
-
-### Agent-Executability
-
-Each TASK*.md must be independently executable by an agent:
-
-| Requirement | Why |
-|-------------|-----|
-| All file paths explicit | Agent can't guess locations |
-| Context files listed | Agent doesn't remember previous tasks |
-| Verification commands provided | Agent needs to confirm completion |
-| No "see previous task" | Each task is standalone |
-
-### Appropriate Scope
-
-| Document | Contains | Does NOT Contain |
-|----------|----------|------------------|
-| SPEC.md | Requirements, user stories | Implementation code |
-| DESIGN.md | Architecture, patterns | Detailed code examples |
-| PLAN.md | Task order, dependencies | Implementation details |
-| TASK*.md | Implementation guidance | Consumer integration examples |
+| Metric | Limit |
+|--------|-------|
+| Implementation code | ~200 lines (tests excluded) |
+| Files touched | ≤5 (or split the task) |
 
 ---
 
-## Review Labels
+## Cross-Document Checks
 
-| Label | Meaning | Blocks Approval |
-|-------|---------|-----------------|
-| `[must]` | Missing sections, circular deps, ambiguous reqs | Yes |
-| `[q]` | Questions needing clarification | Yes (until answered) |
-| `[nit]` | Minor improvements, formatting | No |
+| Check | Severity |
+|-------|----------|
+| Circular task dependencies | `[must]` |
+| SPEC requirement missing from tasks | `[must]` |
+| Task scope exceeds SPEC | `[q]` |
+| Each task independently executable | `[must]` |
 
 ---
 
-## Verdict Criteria
+## Verdicts
 
 | Verdict | Condition |
 |---------|-----------|
-| **APPROVE** | No `[must]` issues, all required sections present, tasks are agent-executable |
-| **REQUEST_CHANGES** | Has `[must]` issues that can be fixed by updating documents |
-| **NEEDS_DISCUSSION** | Ambiguous requirements, conflicting constraints, fundamental scope concerns |
+| **APPROVE** | No `[must]`, all required sections present |
+| **REQUEST_CHANGES** | Has `[must]` that can be fixed |
+| **NEEDS_DISCUSSION** | Ambiguous requirements, scope concerns |

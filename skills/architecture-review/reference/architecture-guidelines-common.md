@@ -1,155 +1,96 @@
-# Architecture Guidelines — Common
+# Architecture Review Reference
 
-Shared principles and metrics that apply to all code regardless of language or framework.
-
----
-
-## Common Metrics
-
-| Metric | Threshold | Rationale |
-|--------|-----------|-----------|
-| % file changed | >40% | Major changes warrant architectural review |
-| TODO/FIXME count | >3 | Accumulating tech debt |
-| Duplicate code blocks | >2 | DRY violation |
-| File length | >400 lines | Long files are hard to navigate |
-| Cyclomatic complexity | >10 | High branching makes testing difficult |
-| Nesting depth | >4 levels | Deep nesting reduces readability |
+Rules for reviewing structural patterns and complexity. Use `[must]`, `[q]`, `[nit]` labels.
 
 ---
 
-## Universal Principles
+## Severity Labels
 
-### Single Responsibility Principle (SRP)
-
-Every module, class, or function should have one reason to change.
-
-**Signs of violation:**
-- Name includes "And" or "Or"
-- Difficult to describe purpose in one sentence
-- Multiple unrelated dependencies
-- Changes for different reasons
-
-### Separation of Concerns
-
-Different aspects of functionality should be in different modules.
-
-**Common layers:**
-```
-┌─────────────────────────────┐
-│    Presentation / API       │  User interface, HTTP handlers
-├─────────────────────────────┤
-│    Business Logic           │  Domain rules, orchestration
-├─────────────────────────────┤
-│    Data Access              │  Database, external services
-├─────────────────────────────┤
-│    Infrastructure           │  Logging, config, utilities
-└─────────────────────────────┘
-```
-
-**Layer violations to detect:**
-- Upper layers bypassing intermediate layers
-- Lower layers depending on upper layers
-- Cross-cutting concerns scattered everywhere
-
-### Dependency Direction
-
-Dependencies should point inward (toward the domain/business logic).
-
-```
-UI → Services → Domain ← Repository
-                  ↑
-              Infrastructure
-```
-
-**Bad:** Domain depends on database implementation
-**Good:** Domain defines interfaces, infrastructure implements them
+| Label | Meaning | Blocks |
+|-------|---------|--------|
+| `[must]` | Architectural violations, blocking thresholds | Yes |
+| `[q]` | Needs justification, warning thresholds | Yes (until answered) |
+| `[nit]` | Suggestions | No |
 
 ---
 
-## Complexity Indicators
+## Metrics Thresholds
 
-### Cyclomatic Complexity
+| Metric | Warn `[q]` | Block `[must]` |
+|--------|------------|----------------|
+| Cyclomatic complexity | >10 | >15 |
+| Function length | >30 lines | >50 lines |
+| File length | >300 lines | >500 lines |
+| Nesting depth | >3 levels | >4 levels |
+| Parameters | >4 | >5 |
+| Duplicate code blocks | >2 | >3 |
+| TODO/FIXME count | >3 | >5 |
 
-Count of independent paths through code.
-
-| Value | Assessment |
-|-------|------------|
-| 1-5 | Simple, low risk |
-| 6-10 | Moderate, some risk |
-| 11-20 | Complex, high risk |
-| 21+ | Untestable, refactor |
-
-**How to count:** Start at 1, add 1 for each:
-- `if`, `else if`, `case`
-- `for`, `while`, `do-while`
-- `&&`, `||` in conditions
-- `catch`, `except`
-- Ternary operators
-
-### Cognitive Complexity
-
-How hard code is to understand (considers nesting).
-
-| Value | Assessment |
-|-------|------------|
-| 0-10 | Easy to understand |
-| 11-25 | Requires concentration |
-| 26+ | Very difficult, split it |
+**Trigger deep review if:** Any metric exceeds warn threshold.
 
 ---
 
-## Code Smells (Universal)
+## Complexity Delta Rule
 
-### Long Function
+**Regressions are `[must]`:**
 
-**Symptoms:**
-- >50 lines of code
-- Multiple levels of abstraction
-- Many local variables
-- Hard to name accurately
-
-**Fix:** Extract smaller functions with clear names
-
-### Long Parameter List
-
-**Symptoms:**
-- >5 parameters
-- Related parameters always passed together
-- Boolean flags controlling behavior
-
-**Fix:**
-- Group related params into object
-- Use builder/options pattern
-- Split into multiple functions
-
-### Feature Envy
-
-**Symptoms:**
-- Function uses more data from another class than its own
-- Frequent accessor calls on other objects
-
-**Fix:** Move function to the class whose data it uses
-
-### Shotgun Surgery
-
-**Symptoms:**
-- One change requires many small changes across files
-- Related code scattered in multiple places
-
-**Fix:** Consolidate related code into one module
-
-### Primitive Obsession
-
-**Symptoms:**
-- Using primitives instead of small objects (email as string, money as float)
-- Groups of primitives that belong together
-
-**Fix:** Create value objects/types
+| Condition | Severity |
+|-----------|----------|
+| CC increases by >5 | `[must]` |
+| Any metric crosses from below to above block threshold | `[must]` |
+| New code smell introduced | `[must]` |
 
 ---
 
-## Sources
+## Code Smells
 
-- [Code Quality Metrics - Qodo](https://www.qodo.ai/blog/code-quality/)
-- [Code Complexity Explained - Qodo](https://www.qodo.ai/blog/code-complexity/)
-- [Clean Architecture - Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+### Blocking `[must]`
+
+| Smell | Detection |
+|-------|-----------|
+| Long Function | >50 lines |
+| Long Parameter List | >5 params |
+| Deep Nesting | >4 levels |
+| Duplicate Code | >10 lines repeated |
+| God Class/Function | Multiple unrelated responsibilities |
+
+### Warning `[q]`
+
+| Smell | Detection |
+|-------|-----------|
+| Feature Envy | Function uses another class's data more than its own |
+| Shotgun Surgery | One change requires edits across many files |
+| Primitive Obsession | Related primitives not grouped into object |
+| Boolean Flags | Function behavior controlled by boolean params |
+
+---
+
+## Structural Violations
+
+### SRP Violations `[q]`
+
+| Detection |
+|-----------|
+| Name contains "And" or "Or" |
+| Cannot describe purpose in one sentence |
+| Multiple unrelated dependencies |
+| Changes for different reasons |
+
+### Layer Violations `[must]`
+
+| Detection |
+|-----------|
+| Presentation layer accesses data layer directly |
+| Lower layer depends on upper layer |
+| Domain depends on infrastructure implementation |
+
+---
+
+## Verdicts
+
+| Verdict | Condition |
+|---------|-----------|
+| **SKIP** | All metrics below warn thresholds |
+| **APPROVE** | Deep review passed, no `[must]` issues |
+| **REQUEST_CHANGES** | Has `[must]` or unresolved `[q]` |
+| **NEEDS_DISCUSSION** | Major refactoring needed |
