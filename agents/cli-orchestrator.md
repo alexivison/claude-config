@@ -47,11 +47,30 @@ Parse the prompt to determine which CLI to use:
 
 ---
 
+## Path Handling (CRITICAL for Worktrees)
+
+When prompt includes a path like "in /path/to/worktree" or "at /path/to/project":
+1. Extract the path from the prompt
+2. `cd` to that path before running any git or codex commands
+3. All commands must run in that directory context
+
+This is essential when main agent works in a git worktree - the cli-orchestrator subagent won't inherit the working directory.
+
+---
+
 # CODEX MODES
 
 ## Code Review (Codex)
 
 **Trigger:** "review", "code review", "check code"
+
+**Path handling:** If prompt includes a path (e.g., "in /path/to/worktree"), cd there first:
+
+```bash
+cd /path/to/worktree && codex review --uncommitted
+```
+
+If no path specified, run in current directory:
 
 ```bash
 codex review --uncommitted
@@ -78,13 +97,57 @@ codex review --uncommitted
 
 **Trigger:** "architecture", "arch", "structure", "complexity"
 
-### Early Exit Check
+**Path handling:** If prompt includes a path, cd there first for all git/codex commands.
+
+### Step 1: Early Exit Check
 ```bash
-git diff --stat HEAD~1 | tail -1  # If <50 lines → SKIP
+cd /path/to/worktree && git diff --stat HEAD~1 | tail -1  # If <50 lines total → SKIP
 ```
 
+### Step 2: Load Reference Guidelines
+Read appropriate guidelines based on changed file types:
+- `.tsx`, `.jsx`, React hooks → `~/.claude/skills/architecture-review/reference/architecture-guidelines-frontend.md`
+- `.go`, `.py`, backend `.ts` → `~/.claude/skills/architecture-review/reference/architecture-guidelines-backend.md`
+- Always load → `~/.claude/skills/architecture-review/reference/architecture-guidelines-common.md`
+
+### Step 3: Identify Related Files
+Don't just review changed files. Find:
+- Files that import/are imported by changed files
+- Files in same module/package
+- Interface definitions the changed code implements
+
 ```bash
-codex exec -s read-only "Analyze architecture of: $(git diff --name-only HEAD~1 | tr '\n' ' '). Focus on SRP violations, coupling, complexity."
+# Find imports in changed files
+cd /path/to/worktree && grep -h "import\|require\|from" $(git diff --name-only HEAD~1) | sort -u
+```
+
+### Step 4: Run Comprehensive Review
+```bash
+cd /path/to/worktree && codex exec -s read-only "
+Architecture review with regression detection.
+
+Changed files: $(git diff --name-only HEAD~1 | tr '\n' ' ')
+
+Review scope:
+1. METRICS - Measure cyclomatic complexity, function length, file length, nesting depth for changed functions
+2. REGRESSION CHECK - Compare metrics before/after. Flag if:
+   - CC increases by >5 → [must]
+   - Any metric crosses warn→block threshold → [must]
+   - New code smell introduced → [must]
+3. CODE SMELLS - Check for: God class, Long function (>50 lines), Deep nesting (>4), Feature envy, Shotgun surgery
+4. STRUCTURAL - SRP violations, layer violations (presentation→data direct access)
+5. SURROUNDING CONTEXT - Do changes fit with related files? Any coupling issues introduced?
+
+Thresholds (from guidelines):
+| Metric | Warn [q] | Block [must] |
+|--------|----------|--------------|
+| Cyclomatic complexity | >10 | >15 |
+| Function length | >30 lines | >50 lines |
+| File length | >300 lines | >500 lines |
+| Nesting depth | >3 levels | >4 levels |
+
+Use [must], [q], [nit] severity labels.
+"
 ```
 
 ### Output Format (VERDICT FIRST for marker detection)
@@ -93,13 +156,25 @@ codex exec -s read-only "Analyze architecture of: $(git diff --name-only HEAD~1 
 
 **Verdict**: **SKIP** | **APPROVE** | **REQUEST_CHANGES** | **NEEDS_DISCUSSION**
 **Mode**: Quick scan | Deep review
+**Files reviewed**: {N changed} + {M related}
 
-### Metrics
-| Metric | Value | Status |
-|--------|-------|--------|
+### Metrics Delta
+| File:Function | Metric | Before | After | Status |
+|---------------|--------|--------|-------|--------|
+| calc.ts:divide | CC | 2 | 4 | ✓ |
+| calc.ts:divide | Lines | 5 | 12 | ✓ |
 
-### Analysis
-{Key findings if deep review}
+### Regression Check
+{None detected | List regressions with [must] label}
+
+### Code Smells
+{None detected | List with severity}
+
+### Structural Issues
+{None detected | List SRP/layer violations}
+
+### Context Fit
+{How changes integrate with surrounding code}
 ```
 
 ## Design Decision (Codex)

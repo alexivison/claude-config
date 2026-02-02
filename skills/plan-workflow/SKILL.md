@@ -41,7 +41,7 @@ Before planning, clarify requirements:
 ## Planning Phase
 
 1. **Invoke cli-orchestrator for plan creation**:
-   - Prompt: "Create implementation plan for: {feature description}. Project path: doc/projects/{feature-name}/"
+   - Prompt: "Create implementation plan for: {feature description}. In {worktree_path}. Project path: doc/projects/{feature-name}/"
    - Codex analyzes the codebase and generates all planning documents
    - Returns documents in `<documents>` section
 
@@ -66,7 +66,7 @@ cli-orchestrator (plan creation) -> write docs -> cli-orchestrator (plan review)
 ### Step-by-Step
 
 1. **Run cli-orchestrator for plan review** (MANDATORY)
-   - Prompt: "Plan review for doc/projects/<feature-name>/. Iteration: 1."
+   - Prompt: "Plan review in {worktree_path} for doc/projects/<feature-name>/. Iteration: 1."
    - Codex reviews all documents against plan-review guidelines
    - Returns APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
 
