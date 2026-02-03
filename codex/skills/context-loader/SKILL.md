@@ -13,102 +13,85 @@ Load shared project context to ensure Codex CLI has the same knowledge as Claude
 
 **ALWAYS** - This skill runs at the beginning of every task.
 
-## Path Detection
+## CRITICAL: Execute These Commands
 
-First, determine where config files are:
+You MUST execute the following commands at the start of every task. These are not optional documentation - you must actually run these shell commands to load the guidelines.
+
+### Step 1: Detect Config Root
 
 ```bash
-# Check if we're already in ~/.claude or similar config directory
-if [ -f "CLAUDE.md" ] && [ -d "rules" ] && [ -d "agents" ]; then
-  # Already in config directory - use current paths
-  CONFIG_ROOT="."
-elif [ -d ".claude" ]; then
-  # Project with .claude subdirectory
-  CONFIG_ROOT=".claude"
-elif [ -d "$HOME/.claude" ]; then
-  # Fall back to global config
+# Run this to find where config files are
+if [ -d "$HOME/.claude" ]; then
   CONFIG_ROOT="$HOME/.claude"
+  echo "[context-loader] Using config: $CONFIG_ROOT"
+elif [ -d ".claude" ]; then
+  CONFIG_ROOT=".claude"
+  echo "[context-loader] Using config: $CONFIG_ROOT"
 else
-  # No config found
+  echo "[context-loader] WARNING: No config found"
   CONFIG_ROOT=""
 fi
 ```
 
-## Workflow
+### Step 2: Load Review Guidelines (MANDATORY for review tasks)
 
-### Step 1: Load Development Rules
+**For code review tasks**, you MUST read this file before reviewing:
 
-Read key files from `${CONFIG_ROOT}/rules/`:
-
-```
-rules/
-├── development.md       # Git, PRs, task management
-├── execution-core.md    # Workflow sequence, verdicts
-├── autonomous-flow.md   # Continuous execution rules
+```bash
+cat "$HOME/.codex/skills/code-review/reference/general.md"
 ```
 
-### Step 2: Load Agent Definition
+This file contains critical rules including:
+- `[must] Tests missing for new code` — BLOCKS approval
+- Maintainability thresholds
+- Severity labels
 
-For review tasks, read cli-orchestrator which handles all review types:
+**For architecture review tasks**:
 
-```
-agents/
-├── cli-orchestrator.md  # Unified: code review, arch, debug, plan review
-```
-
-### Step 2b: Load Review Guidelines (for review tasks)
-
-Detect task type from prompt and load appropriate skill guidelines.
-
-**For code review** (prompt contains "review", "code review"):
-```
-skills/code-review/reference/general.md
+```bash
+cat "$HOME/.codex/skills/architecture-review/reference/architecture-guidelines-common.md"
 ```
 
-**For architecture review** (prompt contains "architecture", "arch"):
-```
-skills/architecture-review/reference/*.md
-```
+**For plan review tasks**:
 
-**For plan review** (prompt contains "plan review"):
-```
-skills/plan-review/reference/*.md
+```bash
+cat "$HOME/.codex/skills/plan-review/reference/plan-review-guidelines.md"
 ```
 
-**Skill Loading Log (ALWAYS output at start):**
-```
-[context-loader] Config: ${CONFIG_ROOT}
-[context-loader] Skills loaded:
-  ✓ code-review/reference/general.md (if loaded)
-  ✓ architecture-review/reference/... (if loaded)
-  - plan-review (not needed for this task)
-```
+### Step 3: Output Loading Confirmation
 
-This helps verify Codex is using the correct guidelines.
+After loading guidelines, output this confirmation:
 
-### Step 3: Load CLAUDE.md
-
-Read the main instructions file:
 ```
-CLAUDE.md                # Core guidelines and workflow selection
+[context-loader] Guidelines loaded:
+  ✓ code-review/reference/general.md
 ```
 
-### Step 4: Execute Task
+If you do NOT output this confirmation, the review is invalid.
 
-With loaded context, execute the requested task following:
-- Development rules from rules/
-- Workflow patterns from CLAUDE.md
-- Standard verdict format
+## Code Review: Mandatory Checks
 
-## Key Rules to Remember
+Before returning APPROVE, you MUST verify ALL of the following:
 
-After loading, follow these principles:
+### Test Coverage Check (BLOCKING)
 
-1. **Standard verdicts** - APPROVE, REQUEST_CHANGES, NEEDS_DISCUSSION, SKIP
-2. **Verdict FIRST** - Always put verdict at the top of output (within first 500 chars)
-3. **File:line references** - Always be specific
-4. **Structured output** - Use headers like "## Code Review (Codex)" for detection
-5. **Read-only by default** - Don't modify files unless explicitly requested
+```
+□ Does the PR add new code (components, functions, hooks)?
+□ If yes, are there corresponding test files?
+□ If no tests exist for new code → [must] Tests missing for new code
+```
+
+**This check is MANDATORY.** A PR that adds new code without tests CANNOT receive APPROVE.
+
+### Quality Checks
+
+| Check | Severity if violated |
+|-------|---------------------|
+| Tests missing for new code | `[must]` — BLOCKS |
+| Tests missing for bug fix | `[must]` — BLOCKS |
+| Function >50 lines | `[must]` — BLOCKS |
+| Nesting depth >4 | `[must]` — BLOCKS |
+| Duplicate code >10 lines | `[must]` — BLOCKS |
 
 ## Iteration Protocol
 
@@ -136,14 +119,31 @@ On iteration 2+:
 Return structured output with verdict at top:
 
 ```markdown
-## {Task Type} (Codex)
+## Code Review (Codex)
 
 **Verdict**: **APPROVE** | **REQUEST_CHANGES** | **NEEDS_DISCUSSION**
 **Iteration**: {N}
+**Guidelines loaded**: ✓ general.md
+
+### Test Coverage
+- New code files: {list}
+- Test files: {list}
+- Coverage: ✓ Complete | ✗ Missing tests for {files}
 
 ### Summary
 {1-2 sentences}
 
-### {Details section}
-...
+### Issues Found
+{[must]/[q]/[nit] items}
 ```
+
+## Verdict Rules
+
+| Condition | Verdict |
+|-----------|---------|
+| No `[must]`, no unanswered `[q]`, tests present | **APPROVE** |
+| Has `[must]` OR missing tests for new code | **REQUEST_CHANGES** |
+| Unanswered `[q]` | **REQUEST_CHANGES** |
+| Architectural concerns, unclear requirements | **NEEDS_DISCUSSION** |
+
+**CRITICAL:** New code without tests = automatic `[must]` = cannot APPROVE.

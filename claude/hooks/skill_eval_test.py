@@ -185,7 +185,9 @@ class TestFormatOutput:
 
         assert "additionalContext" in output
         assert 'priority="MUST"' in output["additionalContext"]
-        assert "BLOCKING REQUIREMENT" in output["additionalContext"]
+        assert f'skill="{trigger.name}"' in output["additionalContext"]
+        assert "STOP" in output["additionalContext"]
+        assert "MUST invoke" in output["additionalContext"]
 
     def test_should_format(self):
         """SHOULD triggers should not include blocking message."""

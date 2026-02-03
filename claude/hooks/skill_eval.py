@@ -224,9 +224,14 @@ def format_output(trigger: SkillTrigger) -> dict:
     """Format the output JSON for the hook."""
     if trigger.priority == "must":
         context = (
-            f"<skill-trigger priority=\"MUST\">\n"
-            f"{trigger.suggestion}\n"
-            f"This is a BLOCKING REQUIREMENT per CLAUDE.md.\n"
+            f"<skill-trigger priority=\"MUST\" skill=\"{trigger.name}\">\n"
+            f"⚠️ STOP: You MUST invoke the Skill tool with skill=\"{trigger.name}\" BEFORE doing anything else.\n"
+            f"\n"
+            f"Reason: {trigger.suggestion}\n"
+            f"\n"
+            f"DO NOT proceed with implementation until you have invoked this skill.\n"
+            f"DO NOT read files, write code, or make any changes.\n"
+            f"Your FIRST action must be: Skill(skill=\"{trigger.name}\")\n"
             f"</skill-trigger>"
         )
     else:
