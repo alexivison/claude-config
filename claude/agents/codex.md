@@ -2,7 +2,7 @@
 name: codex
 description: "Deep reasoning via Codex CLI. Handles code review, architecture analysis, plan review, design decisions, debugging, and trade-off evaluation."
 model: haiku
-tools: Bash, Read, Grep, Glob
+tools: Bash, Read, Grep, Glob, TaskStop, TaskOutput
 color: blue
 ---
 
@@ -31,7 +31,36 @@ You don't do the analysis yourself — you invoke `codex exec -s read-only` and 
 2. **Gather context** — Read relevant domain rules from `claude/rules/` or `.claude/rules/` if they exist
 3. **Invoke Codex** — Run `codex exec -s read-only "..."` with appropriate prompt
 4. **Parse output** — Extract key findings and verdict
-5. **Return structured result** — Use the output format below
+5. **Cleanup** — Stop any background tasks before returning (see Cleanup Protocol)
+6. **Return structured result** — Use the output format below
+
+## Bash Execution Rules (CRITICAL)
+
+**NEVER use `run_in_background: true`** when invoking `codex exec`. Always run synchronously.
+
+**Use extended timeout** for Codex CLI (it uses extended reasoning):
+```
+timeout: 300000  # 5 minutes - Codex needs time for deep analysis
+```
+
+Example invocation:
+```bash
+codex exec -s read-only "Your prompt here"
+```
+With Bash tool parameters: `{ "command": "codex exec -s read-only \"...\"", "timeout": 300000 }`
+
+## Cleanup Protocol
+
+**Before returning your final response:**
+
+1. Check if any background tasks were created (you'll see task IDs in tool results)
+2. If background tasks exist, use `TaskStop` to terminate them:
+   ```
+   TaskStop with task_id: "{task_id}"
+   ```
+3. Only then return your structured response
+
+This prevents orphaned Codex processes from continuing after you've returned.
 
 ## Output Format
 
