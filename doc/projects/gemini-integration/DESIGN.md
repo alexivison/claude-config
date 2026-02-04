@@ -12,7 +12,7 @@
 │  User request ──────────────────► gemini-log-analyzer           │
 │       │                                  │                       │
 │       │                                  ▼                       │
-│       │                           gemini exec                    │
+│       │                           gemini -p                      │
 │       │                                  │                       │
 │       ▼                                  ▼                       │
 │  gemini-ui-debugger              Gemini API                     │
@@ -82,7 +82,7 @@ color: green
 **Behavior:**
 1. Estimate log size (line count × avg line length)
 2. If < 100K tokens → delegate to standard log-analyzer
-3. If > 100K tokens → invoke `gemini exec` with full log content
+3. If > 100K tokens → invoke `cat logs | gemini -p` with full log content
 4. Write findings to `~/.claude/logs/{identifier}.md`
 
 #### gemini-ui-debugger.md
@@ -100,7 +100,7 @@ color: purple
 **Behavior:**
 1. Capture screenshot via Chrome DevTools MCP (or accept file path)
 2. Fetch Figma design via Figma MCP
-3. Invoke `gemini exec --image` with both images
+3. Invoke Gemini API via curl with base64-encoded images
 4. Parse findings into structured format
 5. Return discrepancy report
 
@@ -120,7 +120,7 @@ color: cyan
 1. Formulate search queries from user question
 2. Execute WebSearch tool
 3. Optionally fetch full pages via WebFetch for deeper context
-4. Invoke `gemini exec --model flash` to synthesize results
+4. Invoke `gemini -m gemini-2.0-flash -p` to synthesize results
 5. Return structured findings with source citations
 
 ### 3. skill-eval.sh Updates
@@ -147,7 +147,7 @@ elif echo "$PROMPT_LOWER" | grep -qE '\bresearch\b|\blook up\b|\bfind out\b|\bwh
 **Usage in gemini-ui-debugger:**
 1. Screenshot → save to temp file
 2. Figma design → download to temp file
-3. Both images → `gemini exec --image`
+3. Both images → Gemini API via curl (multimodal)
 
 ## Data Flow
 
@@ -167,7 +167,7 @@ User: "Analyze these production logs"
 ┌─────────────────────┐
 │ gemini-log-analyzer │
 │ - Read log files    │
-│ - gemini exec       │
+│ - gemini -p         │
 │ - Write findings    │
 └─────────┬───────────┘
           │
@@ -191,7 +191,7 @@ User: "Compare my implementation to the Figma design"
 │ gemini-ui-debugger      │
 │ - Screenshot (DevTools) │
 │ - Figma design (MCP)    │
-│ - gemini exec --image   │
+│ - Gemini API (curl)     │
 │ - Parse findings        │
 └─────────┬───────────────┘
           │
@@ -215,7 +215,7 @@ User: "What's the best practice for X in 2026?"
 │ gemini-web-search       │
 │ - WebSearch queries     │
 │ - Optional WebFetch     │
-│ - gemini exec --flash   │
+│ - gemini -m flash -p    │
 │ - Synthesize + cite     │
 └─────────┬───────────────┘
           │

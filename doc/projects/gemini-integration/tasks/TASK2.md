@@ -17,27 +17,26 @@ Read these files first:
 
 ## Multimodal Approach
 
-The Gemini CLI may need configuration for image input. During implementation, determine:
+**Decision:** Use Gemini API directly via curl with base64-encoded images. This is the most reliable approach as it doesn't depend on CLI extension availability.
 
-1. **Check if Gemini CLI supports images natively** via stdin or flag
-2. **If not, use Gemini API directly** via curl with base64-encoded images
-3. **Alternative: Install multimodal extension** if available
-
-**API Fallback Pattern:**
+**Implementation Pattern:**
 ```bash
-# If CLI doesn't support images, use API directly
-curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent" \
+# Send images to Gemini API for comparison
+curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent" \
   -H "Content-Type: application/json" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -d '{
     "contents": [{
       "parts": [
-        {"text": "Compare these images..."},
-        {"inline_data": {"mime_type": "image/png", "data": "'$(base64 -i screenshot.png)'"}}
+        {"text": "Compare these two UI images. The first is the current implementation screenshot, the second is the Figma design. Identify all visual discrepancies including layout, spacing, colors, typography, and responsive issues. Rate each by severity (HIGH/MEDIUM/LOW) and suggest specific CSS fixes."},
+        {"inline_data": {"mime_type": "image/png", "data": "'"$(base64 -i "$SCREENSHOT_PATH")"'"}},
+        {"inline_data": {"mime_type": "image/png", "data": "'"$(base64 -i "$FIGMA_PATH")"'"}}
       ]
     }]
-  }'
+  }' | jq -r '.candidates[0].content.parts[0].text'
 ```
+
+**Why API over CLI:** The Gemini CLI has no image extensions installed (`gemini extensions list` returns empty). The API provides guaranteed multimodal support without additional setup.
 
 ## Files to Create
 
@@ -71,9 +70,10 @@ color: purple
    - Use `mcp__figma__get_figma_data` to get node info
    - Use `mcp__figma__download_figma_images` to get design image
 
-3. **Comparison via Gemini:**
-   - Send both images to Gemini (method TBD based on CLI capabilities)
-   - Prompt for visual comparison
+3. **Comparison via Gemini API:**
+   - Base64-encode both images
+   - Send to Gemini API via curl (see Multimodal Approach above)
+   - Parse JSON response for comparison findings
 
 4. **Output Format:**
    ```markdown
