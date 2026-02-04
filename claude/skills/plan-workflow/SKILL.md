@@ -53,24 +53,12 @@ Before planning, clarify requirements:
 Execute continuously - **no stopping until PR is created**.
 
 ```
-plan-reviewer (iteration loop) -> codex (iteration loop) -> PR
+codex (iteration loop) -> PR
 ```
 
 ### Step-by-Step
 
-1. **Run plan-reviewer agent** (MANDATORY)
-   - Reviews all documents against plan-review guidelines
-   - Returns APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
-
-2. **Handle plan-reviewer verdict:**
-   | Verdict | Action |
-   |---------|--------|
-   | APPROVE | Continue to codex |
-   | REQUEST_CHANGES | Fix issues, re-run plan-reviewer |
-   | NEEDS_DISCUSSION | Show findings, ask user |
-   | 3rd iteration fails | Show findings, ask user |
-
-3. **Run codex agent** (MANDATORY)
+1. **Run codex agent** (MANDATORY)
    - Deep reasoning review for architectural soundness, feasibility, risks
    - Returns APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
 
@@ -96,7 +84,7 @@ plan-reviewer (iteration loop) -> codex (iteration loop) -> PR
    {reason}
    ```
 
-4. **Handle codex verdict:**
+2. **Handle codex verdict:**
    | Verdict | Action |
    |---------|--------|
    | APPROVE | Continue to PR |
@@ -104,7 +92,7 @@ plan-reviewer (iteration loop) -> codex (iteration loop) -> PR
    | NEEDS_DISCUSSION | Show findings, ask user |
    | 3rd iteration fails | Show findings, ask user |
 
-5. **Create PR** with plan files only:
+3. **Create PR** with plan files only:
    ```bash
    git add doc/projects/<feature-name>/
    git commit -m "docs: add implementation plan for <feature-name>"
@@ -139,7 +127,7 @@ implement @doc/projects/<feature>/tasks/TASK0.md
 
 Always use `-plan` suffix (e.g., `ENG-123-auth-plan` or `auth-feature-plan`). This:
 - Preserves Linear issue ID convention (`<ISSUE-ID>-<description>`)
-- Triggers plan-specific PR gate path (requires plan-reviewer + codex markers)
+- Triggers plan-specific PR gate path (requires codex marker)
 
 ## When to Use This Workflow
 
@@ -165,5 +153,5 @@ user: implement @doc/projects/<feature>/tasks/TASK0.md
 ## Core Reference
 
 See [execution-core.md](/Users/aleksituominen/.claude/rules/execution-core.md) for:
-- plan-reviewer iteration rules
+- codex iteration rules
 - Pause conditions

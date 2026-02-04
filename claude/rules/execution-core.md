@@ -33,9 +33,6 @@ Shared execution sequence for all workflow skills. This is loaded on-demand by w
 <!-- | security-scanner | HIGH/CRITICAL | Ask user for approval | YES | -->
 | /pre-pr-verification | All pass | Create commit and PR | NO |
 | /pre-pr-verification | Failures | Fix and re-run | NO |
-| plan-reviewer | APPROVE | Run codex (plan review) | NO |
-| plan-reviewer | REQUEST_CHANGES | Fix and re-run | NO |
-| plan-reviewer | NEEDS_DISCUSSION | Show findings, ask user | YES |
 | codex (plan) | APPROVE | Create plan PR | NO |
 | codex (plan) | REQUEST_CHANGES | Fix and re-run | NO |
 | codex (plan) | NEEDS_DISCUSSION | Show findings, ask user | YES |
@@ -54,7 +51,7 @@ Only pause for:
 |-------------|----------|---------------|--------------|
 | Investigation | debug-investigator, log-analyzer | Always | Full findings, then AskUserQuestion |
 | Verification | test-runner, check-runner | Never (fix failures directly) | Summary only |
-| Iterative | code-critic, codex, plan-reviewer | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
+| Iterative | code-critic, codex | NEEDS_DISCUSSION or 3 failures | Verdict each iteration |
 
 <!-- security-scanner moved to optional; Codex covers basic security review -->
 

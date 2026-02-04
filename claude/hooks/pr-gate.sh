@@ -29,20 +29,15 @@ if echo "$COMMAND" | grep -qE 'gh pr create'; then
   BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
 
   if echo "$BRANCH_NAME" | grep -qE '\-plan$'; then
-    # Plan PR - need plan-reviewer AND codex markers
-    PLAN_REVIEWER_MARKER="/tmp/claude-plan-reviewer-$SESSION_ID"
+    # Plan PR - need codex marker only
     CODEX_MARKER="/tmp/claude-codex-$SESSION_ID"
 
-    MISSING=""
-    [ ! -f "$PLAN_REVIEWER_MARKER" ] && MISSING="$MISSING plan-reviewer"
-    [ ! -f "$CODEX_MARKER" ] && MISSING="$MISSING codex"
-
-    if [ -n "$MISSING" ]; then
+    if [ ! -f "$CODEX_MARKER" ]; then
       cat << EOF
 {
   "hookSpecificOutput": {
     "permissionDecision": "deny",
-    "permissionDecisionReason": "BLOCKED: Plan PR requires plan-reviewer + codex APPROVE. Missing:$MISSING"
+    "permissionDecisionReason": "BLOCKED: Plan PR requires codex APPROVE. Missing: codex"
   }
 }
 EOF

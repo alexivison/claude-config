@@ -122,7 +122,8 @@ if [ "$agent_type" = "check-runner" ]; then
   fi
 fi
 
-# plan-reviewer: only APPROVED creates marker
+# plan-reviewer: marker no longer required (codex handles plan review)
+# Kept for observability but not enforced by pr-gate
 if [ "$agent_type" = "plan-reviewer" ] && [ "$verdict" = "APPROVED" ]; then
   touch "/tmp/claude-plan-reviewer-$session_id"
 fi

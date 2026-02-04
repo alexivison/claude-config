@@ -40,7 +40,7 @@ Details in `~/.claude/agents/README.md`. Quick reference:
 | Analyze logs | log-analyzer |
 | After implementing | code-critic (MANDATORY) |
 | After code-critic | codex (MANDATORY) |
-| After creating plan | plan-reviewer (MANDATORY) |
+| After creating plan | codex (MANDATORY) |
 
 ## Verification Principle
 
