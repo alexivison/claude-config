@@ -108,5 +108,5 @@ The Gemini CLI is already installed at `/Users/aleksituominen/.nvm/versions/node
 | Risk | Mitigation |
 |------|------------|
 | Gemini API rate limits | CLI handles retry internally |
-| Multimodal support | Verify via extension or API fallback |
+| Multimodal support | Use Gemini API directly via curl + base64 |
 | Context overflow | Truncate with clear warning |

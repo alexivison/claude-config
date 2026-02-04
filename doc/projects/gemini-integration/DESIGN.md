@@ -270,9 +270,14 @@ export GEMINI_API_KEY="..."
 | Scenario | Handling |
 |----------|----------|
 | API key missing | Error with setup instructions |
-| Rate limit | Retry with exponential backoff |
+| Rate limit (429) | Retry with exponential backoff |
+| HTTP error (non-2xx) | Log status code, extract error message from response, exit 1 |
+| Network timeout | curl with `--max-time 60`, report timeout and retry once |
+| Invalid JSON response | Check `jq -e` exit code, report parse failure |
+| `jq` not available | Fallback to grep-based extraction or error with install instructions |
+| Empty candidates array | Report "No response generated", suggest prompt adjustment |
 | Context overflow | Truncate with warning, suggest chunking |
-| Image too large | Resize before sending |
+| Image too large | Resize before sending (max 4MB per image) |
 | Figma fetch fails | Fall back to user-provided screenshot only |
 
 ## Security Considerations
