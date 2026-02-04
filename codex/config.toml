@@ -8,7 +8,6 @@ model_reasoning_summary = "detailed"
 
 # Approval policy for commands
 approval_policy = "on-request"
-personality = "pragmatic"
 
 # Sandbox defaults
 [sandbox]
