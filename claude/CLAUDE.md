@@ -20,7 +20,7 @@ Workflow skills load on-demand. See `~/.claude/skills/*/SKILL.md` for details.
 
 **Do NOT stop between steps.** Core sequence:
 ```
-tests → implement → early-lint → checkboxes → code-critic → codex → /pre-pr-verification → commit → PR
+tests → implement → checkboxes → code-critic → codex → /pre-pr-verification → commit → PR
 ```
 
 **Checkboxes = TASK*.md + PLAN.md** — Update both files. Forgetting PLAN.md is a common violation.

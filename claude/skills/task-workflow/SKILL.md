@@ -25,7 +25,7 @@ State which items were checked before proceeding.
 After passing the gate, execute continuously — **no stopping until PR is created**.
 
 ```
-/write-tests (if needed) → implement → early-lint → checkboxes → code-critic → codex → /pre-pr-verification → commit → PR
+/write-tests (if needed) → implement → checkboxes → code-critic → codex → /pre-pr-verification → commit → PR
 ```
 
 ### Step-by-Step
@@ -33,13 +33,12 @@ After passing the gate, execute continuously — **no stopping until PR is creat
 1. **Tests** — If task needs tests, invoke `/write-tests` first (RED phase via test-runner)
 2. **Implement** — Write the code to make tests pass
 3. **GREEN phase** — Run test-runner agent to verify tests pass
-4. **Early lint/format** — Run `pnpm lint --fix` + `prettier --write` on changed files (catches issues before code-critic)
-5. **Checkboxes** — Update both TASK*.md AND PLAN.md: `- [ ]` → `- [x]` (MANDATORY — both files)
-6. **code-critic** — MANDATORY after implementing. Fix issues until APPROVE
-7. **codex** — Spawn codex agent for combined code + architecture review
-8. **Re-run code-critic** — If Codex made changes, verify conventions
-9. **PR Verification** — Invoke `/pre-pr-verification` (runs test-runner + check-runner internally)
-10. **Commit & PR** — Create commit and draft PR
+4. **Checkboxes** — Update both TASK*.md AND PLAN.md: `- [ ]` → `- [x]` (MANDATORY — both files)
+5. **code-critic** — MANDATORY after implementing. Fix issues until APPROVE
+6. **codex** — Spawn codex agent for combined code + architecture review
+7. **Re-run code-critic** — If Codex made changes, verify conventions
+8. **PR Verification** — Invoke `/pre-pr-verification` (runs test-runner + check-runner internally)
+9. **Commit & PR** — Create commit and draft PR
 
 **Note:** Step 5 (Checkboxes) MUST include PLAN.md. Forgetting PLAN.md is a common violation.
 

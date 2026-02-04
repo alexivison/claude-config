@@ -10,7 +10,7 @@ When executing a task from TASK*.md, **do not stop until PR is created** (or a v
 
 **Code workflow (task-workflow, bugfix-workflow):**
 ```
-/write-tests → implement → early-lint → checkboxes → code-critic → codex → /pre-pr-verification → commit → PR
+/write-tests → implement → checkboxes → code-critic → codex → /pre-pr-verification → commit → PR
 ```
 
 **Plan workflow (plan-workflow):**
