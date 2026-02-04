@@ -67,25 +67,26 @@ Integrate Google Gemini into the autonomous workflow as a complementary model fo
 
 ### Gemini CLI
 
-Create a CLI wrapper similar to Codex CLI pattern:
-- `gemini-cli/` directory with configuration
-- `gemini-cli exec` command for invoking Gemini
-- Support for image input (base64 or file path)
-- Configurable model selection (Gemini 1.5 Pro, Gemini 1.5 Flash)
+Use the existing Gemini CLI (already installed and authenticated):
+- Located at `/Users/aleksituominen/.nvm/versions/node/v24.12.0/bin/gemini`
+- OAuth credentials in `gemini/` directory
+- Add `gemini/AGENTS.md` for agent instructions
 
-### Configuration
+### CLI Usage
 
-```toml
-# gemini-cli/config.toml
-model = "gemini-1.5-pro"
-model_context_window = 2000000
+```bash
+# Non-interactive query
+gemini -p "prompt"
 
-[models]
-default = "gemini-1.5-pro"      # For log analysis, UI debugging
-fast = "gemini-1.5-flash"        # For web search synthesis
+# Model selection
+gemini -m gemini-2.0-flash -p "prompt"
+gemini -m gemini-2.5-pro -p "prompt"
 
-[features]
-multimodal = true
+# Read-only mode
+gemini --approval-mode plan -p "prompt"
+
+# Large input via stdin
+cat large.log | gemini -p "Analyze these logs..."
 ```
 
 ### Integration Points
@@ -118,6 +119,6 @@ multimodal = true
    - [ ] Returns structured findings
 
 4. **Infrastructure:**
-   - [ ] Gemini CLI wrapper functional
-   - [ ] Configuration in gemini-cli/config.toml
+   - [ ] Existing Gemini CLI verified working
+   - [ ] `gemini/AGENTS.md` created with agent instructions
    - [ ] Agent definitions in claude/agents/

@@ -2,9 +2,9 @@
 
 > **Goal:** Add Gemini-powered agents for large-scale log analysis, UI debugging, and web research.
 >
-> **Architecture:** Gemini CLI wrapper (shell script + API calls) invoked by dedicated agents. Each agent handles a specific use case leveraging Gemini's unique capabilities (2M context, multimodal, fast inference).
+> **Architecture:** Use existing Gemini CLI (already installed and authenticated) invoked by dedicated agents. Each agent handles a specific use case leveraging Gemini's unique capabilities (2M context, multimodal, fast inference).
 >
-> **Tech Stack:** Bash, Gemini API, existing MCP tools (Figma, Chrome DevTools)
+> **Tech Stack:** Gemini CLI, existing MCP tools (Figma, Chrome DevTools)
 >
 > **Specification:** [SPEC.md](./SPEC.md) | **Design:** [DESIGN.md](./DESIGN.md)
 
@@ -12,17 +12,17 @@
 
 | Task | Description | Dependencies |
 |------|-------------|--------------|
-| TASK0 | Gemini CLI wrapper infrastructure | None |
+| TASK0 | Gemini CLI configuration | None |
 | TASK1 | gemini-log-analyzer agent | TASK0 |
 | TASK2 | gemini-ui-debugger agent | TASK0 |
 | TASK3 | gemini-web-search agent | TASK0 |
 | TASK4 | skill-eval.sh integration | TASK3 |
-| TASK5 | Documentation and README updates | TASK1, TASK2, TASK3 |
+| TASK5 | Documentation updates | TASK1, TASK2, TASK3 |
 
 ## Dependency Graph
 
 ```
-TASK0 (CLI wrapper)
+TASK0 (CLI config)
   │
   ├──► TASK1 (log-analyzer)
   │         │
@@ -39,14 +39,11 @@ TASK0 (CLI wrapper)
 
 ## Task Details
 
-### TASK0: Gemini CLI Wrapper
-- [ ] Create `gemini-cli/` directory structure
-- [ ] Implement `gemini-cli/bin/gemini-cli` CLI script
-- [ ] Create `gemini-cli/config.toml` configuration
-- [ ] Create `gemini-cli/AGENTS.md` instructions
-- [ ] Add `.gitignore` entries for cache files
+### TASK0: Gemini CLI Configuration
+- [ ] Verify CLI is installed and authenticated
+- [ ] Create `gemini/AGENTS.md` instructions
 
-**Deliverables:** Functional `gemini-cli exec` command
+**Deliverables:** Verified CLI + agent instructions
 
 ### TASK1: gemini-log-analyzer Agent
 - [ ] Create `claude/agents/gemini-log-analyzer.md`
@@ -83,19 +80,20 @@ TASK0 (CLI wrapper)
 ### TASK5: Documentation Updates
 - [ ] Update `claude/agents/README.md` with new agents
 - [ ] Update `claude/CLAUDE.md` sub-agents table
-- [ ] Create `gemini-cli/README.md` with setup instructions
-- [ ] Add environment variable documentation
 
 **Deliverables:** Complete documentation for new capabilities
 
 ## Implementation Notes
 
-### Gemini CLI Script Pattern
+### Gemini CLI Usage Pattern
 
-Reference Codex CLI for consistency:
-- `codex exec -s read-only "..."` → `gemini-cli exec "..."`
-- `codex exec` with options → `gemini-cli exec --model flash --image ...`
-- Large input handling → `gemini-cli exec --stdin` or `gemini-cli exec --file`
+The Gemini CLI is already installed at `/Users/aleksituominen/.nvm/versions/node/v24.12.0/bin/gemini`:
+
+| Codex CLI | Gemini CLI |
+|-----------|------------|
+| `codex exec -s read-only "..."` | `gemini --approval-mode plan -p "..."` |
+| Model selection | `gemini -m gemini-2.0-flash -p "..."` |
+| Large input | `cat logs \| gemini -p "Analyze..."` |
 
 ### Testing Strategy
 
@@ -109,6 +107,6 @@ Reference Codex CLI for consistency:
 
 | Risk | Mitigation |
 |------|------------|
-| Gemini API rate limits | Implement retry logic in CLI |
-| Large image handling | Resize before API call |
+| Gemini API rate limits | CLI handles retry internally |
+| Multimodal support | Verify via extension or API fallback |
 | Context overflow | Truncate with clear warning |

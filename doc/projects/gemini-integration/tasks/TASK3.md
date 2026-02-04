@@ -11,7 +11,8 @@ Create an agent that researches questions via web search and synthesizes results
 
 Read these files first:
 - `claude/agents/codex.md` — Agent definition pattern
-- `gemini-cli/config.toml` — Gemini configuration (from TASK0)
+- `gemini/AGENTS.md` — Gemini instructions (from TASK0)
+- Run `gemini --help` to understand CLI options
 - Note: WebSearch and WebFetch are built-in Claude Code tools (available to all agents)
 
 ## Files to Create
@@ -52,7 +53,7 @@ color: cyan
 
 4. **Synthesis via Gemini:**
    ```bash
-   gemini-cli exec --model flash "Synthesize these search results into a comprehensive answer.
+   gemini -m gemini-2.0-flash -p "Synthesize these search results into a comprehensive answer.
 
    Original Question: {question}
 

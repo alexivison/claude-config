@@ -12,7 +12,8 @@ Create an agent that leverages Gemini's 2M token context for large-scale log ana
 Read these files first:
 - `claude/agents/log-analyzer.md` — Current log analyzer (inherit patterns)
 - `claude/agents/codex.md` — Agent definition pattern
-- `gemini-cli/config.toml` — Gemini configuration (from TASK0)
+- `gemini/AGENTS.md` — Gemini instructions (from TASK0)
+- Run `gemini --help` to understand CLI options
 
 ## Files to Create/Modify
 
@@ -51,20 +52,17 @@ color: green
      Use Gemini for analysis
    ```
 
-3. **Gemini Invocation (CRITICAL: use --file or --stdin):**
+3. **Gemini Invocation (use stdin for large content):**
    ```bash
-   # CORRECT: Use --file for large logs (avoids shell arg limit)
-   gemini-cli exec --file /path/to/logs.log "Analyze these logs. Identify:
+   # CORRECT: Pipe logs via stdin
+   cat /path/to/logs.log | gemini --approval-mode plan -m gemini-2.5-pro -p "Analyze these logs. Identify:
    - Error patterns and frequencies
    - Time-based clusters/spikes
    - Correlations between error types
    - Root cause hypotheses"
 
-   # CORRECT: Or pipe via stdin
-   cat /path/to/logs.log | gemini-cli exec --stdin "Analyze these logs..."
-
    # WRONG: Never embed large content in argument (shell limit ~256KB)
-   # gemini-cli exec "$(cat large.log)" ← DO NOT DO THIS
+   # gemini -p "$(cat large.log)" ← DO NOT DO THIS
    ```
 
 4. **Output Format:**
@@ -75,7 +73,7 @@ color: green
 
 - Process flow with size check
 - Delegation logic to standard log-analyzer
-- Gemini prompt template for log analysis (using --file or --stdin)
+- Gemini CLI invocation pattern (stdin piping)
 - Output format matching existing log-analyzer
 - Return message format
 
@@ -88,8 +86,8 @@ grep -q "gemini-log-analyzer" claude/agents/gemini-log-analyzer.md
 # Check for delegation logic
 grep -q "100K\|100000\|delegate" claude/agents/gemini-log-analyzer.md
 
-# Check for correct CLI invocation pattern (--file or --stdin)
-grep -qE "\-\-file|\-\-stdin" claude/agents/gemini-log-analyzer.md
+# Check for correct CLI invocation pattern (stdin piping)
+grep -qE "cat.*\| gemini" claude/agents/gemini-log-analyzer.md
 ```
 
 ## Acceptance Criteria
@@ -97,7 +95,8 @@ grep -qE "\-\-file|\-\-stdin" claude/agents/gemini-log-analyzer.md
 - [ ] Agent definition created at `claude/agents/gemini-log-analyzer.md`
 - [ ] Includes size estimation logic (100K token threshold)
 - [ ] Falls back to standard log-analyzer for small logs
-- [ ] Uses `gemini-cli exec --file` or `--stdin` for large logs (NOT argument embedding)
+- [ ] Uses `cat logs | gemini -p` pattern (stdin piping, NOT argument embedding)
+- [ ] Uses `--approval-mode plan` for read-only operation
 - [ ] Output format matches existing log-analyzer
 - [ ] Writes findings to `~/.claude/logs/{identifier}.md`
 - [ ] Tested with 1MB+ log file successfully

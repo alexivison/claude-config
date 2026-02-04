@@ -25,49 +25,45 @@
 
 ## Component Design
 
-### 1. Gemini CLI Wrapper (`gemini-cli/`)
+### 1. Gemini CLI Configuration (`gemini/`)
 
-Mirror the Codex CLI pattern for consistency.
+Use the existing Gemini CLI (already installed at `/Users/aleksituominen/.nvm/versions/node/v24.12.0/bin/gemini`).
 
-**Note:** Using `gemini-cli/` to avoid collision with existing `gemini/` directory (contains Google CLI OAuth credentials).
-
-**Directory Structure:**
+**Existing Directory Structure:**
 ```
-gemini-cli/
-├── config.toml          # Model configuration
-├── AGENTS.md            # Instructions for Gemini
-└── bin/
-    └── gemini-cli       # CLI entry point (shell script)
+gemini/
+├── oauth_creds.json     # OAuth credentials (existing)
+├── settings.json        # Auth settings (existing)
+├── google_accounts.json # Account info (existing)
+├── AGENTS.md            # Instructions for Gemini (NEW)
+└── config.toml          # Model defaults (NEW - optional)
 ```
 
-**CLI Interface:**
+**CLI Interface (existing commands):**
 ```bash
-# Text-only query (prompt as argument)
-gemini-cli exec "Analyze these logs for error patterns..."
+# Non-interactive query
+gemini -p "Analyze these logs for error patterns..."
 
-# Large input via stdin (REQUIRED for logs > 100KB to avoid shell arg limits)
-cat large.log | gemini-cli exec --stdin "Analyze these logs..."
-
-# Large input via file reference
-gemini-cli exec --file /path/to/large.log "Analyze these logs..."
-
-# With image input (single)
-gemini-cli exec --image /path/to/screenshot.png "Describe this image..."
-
-# With multiple images (for comparison)
-gemini-cli exec --image /path/to/img1.png --image /path/to/img2.png "Compare these images..."
+# Large input via stdin (pipe content before -p flag)
+cat large.log | gemini -p "Analyze these logs..."
 
 # Model selection
-gemini-cli exec --model flash "Quick synthesis of search results..."
+gemini -m gemini-2.0-flash -p "Quick synthesis..."
+gemini -m gemini-2.5-pro -p "Deep analysis..."
+
+# Read-only mode (no file modifications)
+gemini --approval-mode plan -p "Review this code..."
+
+# With images (Gemini CLI supports multimodal via extensions)
+gemini -p "Compare these images" --extensions image
 ```
 
-**Input Handling (Critical for Large Logs):**
-- Shell argument limit is ~256KB on macOS
-- For inputs > 100KB: MUST use `--stdin` or `--file` flag
-- CLI reads from stdin when `--stdin` flag present
-- Images are base64-encoded internally, max 20MB per image (Gemini limit)
-
-**Implementation:** Shell script wrapping `curl` to Gemini API. Handles stdin/file input, base64 encoding for images, and model selection.
+**Key Differences from Codex:**
+| Codex CLI | Gemini CLI |
+|-----------|------------|
+| `codex exec -s read-only "..."` | `gemini --approval-mode plan -p "..."` |
+| Inline prompt | `-p` flag for prompt |
+| N/A | Native stdin support (pipe before command) |
 
 ### 2. Agent Definitions (`claude/agents/`)
 
@@ -229,32 +225,39 @@ User: "What's the best practice for X in 2026?"
 
 ## Configuration
 
-### gemini-cli/config.toml
+### gemini/AGENTS.md (NEW)
 
-```toml
-# Gemini CLI Configuration
+Instructions for Gemini when invoked by Claude Code agents:
 
-[api]
-# API key loaded from environment: GEMINI_API_KEY
-endpoint = "https://generativelanguage.googleapis.com/v1beta"
+```markdown
+# Gemini — Specialized Analysis Agent
 
-[models]
-default = "gemini-1.5-pro-latest"
-fast = "gemini-1.5-flash-latest"
+You are invoked by Claude Code for tasks requiring:
+- Large context analysis (up to 2M tokens)
+- Multimodal understanding (images)
+- Fast synthesis (Flash model)
 
-[limits]
-max_input_tokens = 2000000
-max_output_tokens = 8192
-max_image_size_mb = 20
-max_images = 4
+## Output Format
 
-[input]
-# Use stdin or file for inputs > 100KB to avoid shell arg limits
-large_input_threshold_kb = 100
+Provide structured, actionable output. Include:
+- Clear findings with specifics
+- Severity/priority where applicable
+- Actionable recommendations
 
-[features]
-multimodal = true
+## Boundaries
+
+- Analysis and synthesis only
+- No code generation unless specifically requested
+- No file modifications
 ```
+
+### Model Selection
+
+| Use Case | Model | Flag |
+|----------|-------|------|
+| Log analysis | gemini-2.5-pro | `-m gemini-2.5-pro` |
+| UI comparison | gemini-2.5-pro | `-m gemini-2.5-pro` |
+| Web search synthesis | gemini-2.0-flash | `-m gemini-2.0-flash` |
 
 ### Environment
 
