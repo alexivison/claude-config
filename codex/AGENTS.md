@@ -98,7 +98,7 @@ Structure your response for Claude Code to parse:
 ```markdown
 ## Codex Analysis
 
-**Task:** {Code Review | Architecture | Design | Debug | Trade-off}
+**Task:** {Code Review | Architecture | Plan Review | Design | Debug | Trade-off}
 **Scope:** {what was analyzed}
 
 ### Summary

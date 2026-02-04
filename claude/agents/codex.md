@@ -1,6 +1,6 @@
 ---
 name: codex
-description: "Deep reasoning via Codex CLI. Handles code review, architecture analysis, design decisions, debugging, and trade-off evaluation."
+description: "Deep reasoning via Codex CLI. Handles code review, architecture analysis, plan review, design decisions, debugging, and trade-off evaluation."
 model: haiku
 tools: Bash, Read, Grep, Glob
 color: blue
@@ -40,7 +40,7 @@ Always return structured output for the main agent to parse:
 ```markdown
 ## Codex Analysis
 
-**Task:** {task type - review/architecture/design/debug/trade-off}
+**Task:** {task type - review/architecture/plan/design/debug/trade-off}
 **Scope:** {files or topic analyzed}
 
 ### Findings
@@ -54,7 +54,7 @@ Always return structured output for the main agent to parse:
 {One sentence reason}
 ```
 
-### For Code/Architecture Review (PR workflow)
+### For Code/Architecture/Plan Review (PR workflow)
 
 When used for pre-PR review, include "CODEX APPROVED" explicitly on approval:
 
