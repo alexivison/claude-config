@@ -1,6 +1,8 @@
 <!-- Core decision rules. Sub-agent details: ~/.claude/agents/README.md | Domain rules: ~/.claude/rules/* -->
 
 # General Guidelines
+- Always use maximum reasoning effort.
+- Prioritize architectural correctness over speed.
 - Main agent handles all implementation (code, tests, fixes)
 - Sub-agents for context preservation only (investigation, verification)
 - Use "we" instead of "I"
