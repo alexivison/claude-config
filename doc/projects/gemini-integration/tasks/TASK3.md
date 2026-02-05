@@ -5,7 +5,7 @@
 
 ## Objective
 
-Update documentation to reflect the new gemini agent.
+Update documentation to reflect the new gemini agent and deprecate log-analyzer.
 
 ## Required Context
 
@@ -13,61 +13,102 @@ Read these files first:
 - `claude/agents/README.md` — Agent documentation
 - `claude/CLAUDE.md` — Main configuration with sub-agents table
 - `claude/agents/gemini.md` — New agent (from TASK1)
+- `claude/agents/log-analyzer.md` — Agent to deprecate
 
 ## Files to Modify
 
 | File | Action |
 |------|--------|
-| `claude/agents/README.md` | Modify |
-| `claude/CLAUDE.md` | Modify |
+| `claude/agents/README.md` | Modify (add gemini, mark log-analyzer deprecated) |
+| `claude/CLAUDE.md` | Modify (update sub-agents table) |
+| `claude/agents/log-analyzer.md` | Modify (add deprecation notice) |
 
 ## Implementation Details
 
 ### claude/agents/README.md
 
-Add entry for gemini agent in the appropriate section:
+Add entry for gemini agent:
 
 ```markdown
 ### gemini
 
-**Purpose:** Gemini-powered analysis for large-scale log analysis and web research synthesis.
+**Purpose:** Gemini-powered analysis for log analysis and web research synthesis.
 
 **When to use:**
-- Log files exceeding 100K tokens (uses Gemini's 2M context)
+- ALL log analysis tasks (replaces log-analyzer)
 - Research queries requiring web search and synthesis
 
 **Modes:**
 | Mode | Model | Trigger |
 |------|-------|---------|
-| Log analysis | gemini-2.5-pro | Logs > 100K tokens |
+| Log analysis (small) | gemini-2.0-flash | Logs < 500K tokens |
+| Log analysis (large) | gemini-2.5-pro | Logs >= 500K tokens |
 | Web search | gemini-2.0-flash | Research queries |
 
-**Note:** Falls back to standard log-analyzer for small logs.
+**Note:** This agent replaces log-analyzer for all log analysis tasks.
+```
+
+Mark log-analyzer as deprecated:
+
+```markdown
+### log-analyzer (DEPRECATED)
+
+> **DEPRECATED:** Use `gemini` agent instead. This agent will be removed in a future version.
+
+**Purpose:** Analyze application logs for errors, patterns, and anomalies.
+...
 ```
 
 ### claude/CLAUDE.md
 
-Add entry to the sub-agents table:
+Update the sub-agents table:
 
 ```markdown
-| gemini | Large log analysis, web search | Logs > 100K tokens, research queries |
+| gemini | Log analysis, web search | All log analysis, research queries |
+| ~~log-analyzer~~ | ~~Analyze logs~~ | DEPRECATED - use gemini |
 ```
 
-Place after existing analysis agents (e.g., log-analyzer).
+### claude/agents/log-analyzer.md
+
+Add deprecation notice at the top:
+
+```markdown
+---
+name: log-analyzer
+description: "DEPRECATED - Use gemini agent instead. Analyze logs for errors and patterns."
+...
+---
+
+> **⚠️ DEPRECATED:** This agent is deprecated. Use the `gemini` agent for all log analysis tasks.
+> The gemini agent provides the same capabilities with additional benefits:
+> - 2M token context for massive log files
+> - Smart model selection (Flash for small logs, Pro for large logs)
+>
+> This agent will be removed in a future version.
+
+...
+```
 
 ## Verification
 
 ```bash
 # Check README.md updated
 grep -q "gemini" claude/agents/README.md && echo "README updated"
+grep -q "DEPRECATED" claude/agents/README.md && echo "Deprecation noted"
 
 # Check CLAUDE.md updated
-grep -q "gemini.*Large log" claude/CLAUDE.md && echo "CLAUDE.md updated"
+grep -q "gemini.*Log analysis" claude/CLAUDE.md && echo "CLAUDE.md updated"
+
+# Check log-analyzer marked deprecated
+grep -q "DEPRECATED" claude/agents/log-analyzer.md && echo "log-analyzer deprecated"
 ```
 
 ## Acceptance Criteria
 
 - [ ] `claude/agents/README.md` updated with gemini agent documentation
+- [ ] `claude/agents/README.md` marks log-analyzer as deprecated
 - [ ] `claude/CLAUDE.md` sub-agents table includes gemini
+- [ ] `claude/CLAUDE.md` sub-agents table marks log-analyzer as deprecated
+- [ ] `claude/agents/log-analyzer.md` has deprecation notice at top
 - [ ] Documentation explains both modes (log analysis, web search)
-- [ ] Fallback behavior documented (standard log-analyzer for small logs)
+- [ ] No references to "fallback to log-analyzer"

@@ -37,7 +37,7 @@ Integrate Google Gemini into the autonomous workflow as a complementary model fo
    - Ingest logs up to 2M tokens (~8MB of text)
    - All existing log-analyzer capabilities (format detection, aggregation, patterns)
    - Cross-reference logs from multiple sources simultaneously
-   - Falls back to standard log-analyzer for small logs
+   - Handles ALL log sizes (replaces log-analyzer agent)
 
 2. **Web Search Mode:**
    - Perform web searches via WebSearch tool

@@ -109,9 +109,11 @@ color: green
 
 3. Log size routing (after mode determined):
    - Token estimation: bytes=$(wc -c < "$LOG_FILE"); tokens=$((bytes / 4))
-   - < 500K tokens (~2MB) → delegate to standard log-analyzer
+   - < 500K tokens (~2MB) → use gemini-2.0-flash (faster for small logs)
    - 500K - 1.6M tokens → use gemini-2.5-pro via stdin
    - > 1.6M tokens (~6.4MB) → warn about potential truncation
+
+   NOTE: gemini agent handles ALL log analysis. log-analyzer agent is deprecated.
 
 4. Context overflow strategy (>1.6M tokens):
    - IF timestamps present → filter by time range (e.g., last 24h)

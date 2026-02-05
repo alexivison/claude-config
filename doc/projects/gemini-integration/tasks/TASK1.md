@@ -66,10 +66,12 @@ color: green
    a. Estimate log size using byte count (more accurate than line count):
       bytes=$(wc -c < "$LOG_FILE")
       estimated_tokens=$((bytes / 4))
-   b. Routing (threshold: 500K tokens, ~2MB):
-      - IF estimated_tokens < 500K → delegate to standard log-analyzer
-      - IF estimated_tokens > 500K → use Gemini
+   b. Model selection based on size:
+      - IF estimated_tokens < 500K → use gemini-2.0-flash (faster)
+      - IF estimated_tokens >= 500K → use gemini-2.5-pro (large context)
       - IF estimated_tokens > 1.6M → warn about potential truncation
+
+   NOTE: gemini agent handles ALL log analysis. log-analyzer is deprecated.
    c. Context overflow strategy:
       - Filter by time range if timestamps available
       - Or chunk into segments and analyze sequentially
@@ -187,9 +189,10 @@ grep -q "gemini-2.0-flash" claude/agents/gemini.md
   - [ ] Falls back to keyword heuristics when no explicit mode
 - [ ] Log analysis mode:
   - [ ] Size estimation uses byte count (`wc -c`) ÷ 4 for tokens
-  - [ ] Threshold at 500K tokens (~2MB) for Gemini delegation
-  - [ ] Falls back to standard log-analyzer for small logs
+  - [ ] Uses gemini-2.0-flash for logs < 500K tokens
+  - [ ] Uses gemini-2.5-pro for logs >= 500K tokens
   - [ ] Warns if logs exceed 1.6M tokens (potential truncation)
+  - [ ] Handles ALL log sizes (no delegation to log-analyzer)
   - [ ] Context overflow: time-range filtering or chunking strategy
   - [ ] Uses `cat logs | gemini -p` pattern (stdin piping)
   - [ ] Uses gemini-2.5-pro model
@@ -205,7 +208,7 @@ grep -q "gemini-2.0-flash" claude/agents/gemini.md
   - [ ] Synthesizes results with gemini-2.0-flash model
   - [ ] Includes source citations with URLs
 - [ ] Verification tests:
-  - [ ] Log analysis: Test with file >2MB, verify Gemini invoked
-  - [ ] Log analysis: Test with file <2MB, verify log-analyzer delegation
+  - [ ] Log analysis: Test with file >2MB, verify gemini-2.5-pro used
+  - [ ] Log analysis: Test with file <2MB, verify gemini-2.0-flash used
   - [ ] Web search: Test with explicit "search the web" query
   - [ ] CLI: Verify all three resolution paths work
