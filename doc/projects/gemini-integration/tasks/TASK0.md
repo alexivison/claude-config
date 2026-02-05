@@ -180,10 +180,10 @@ gemini --approval-mode plan -p "Say 'Plan mode OK'" 2>&1 | head -3
 
 ## Acceptance Criteria
 
-- [ ] `gemini/GEMINI.md` created with agent instructions
-- [ ] CLI responds to `-p` flag queries
-- [ ] Stdin input works (pipe content to gemini)
-- [ ] Model selection works (`-m` flag)
-- [ ] `--approval-mode plan` works for read-only
-- [ ] Existing `gemini/` OAuth credentials NOT modified
-- [ ] `.gitignore` excludes sensitive files (verified)
+- [x] `gemini/GEMINI.md` created with agent instructions
+- [x] CLI responds to `-p` flag queries
+- [x] Stdin input works (pipe content to gemini)
+- [x] Model selection works (`-m` flag)
+- [x] `--approval-mode plan` works for read-only
+- [x] Existing `gemini/` OAuth credentials NOT modified
+- [x] `.gitignore` excludes sensitive files (verified)

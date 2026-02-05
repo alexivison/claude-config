@@ -122,11 +122,11 @@ When deprecating log-analyzer:
 
 ## Acceptance Criteria
 
-- [ ] `claude/agents/README.md` updated with gemini agent documentation
-- [ ] `claude/agents/README.md` marks log-analyzer as deprecated
-- [ ] `claude/CLAUDE.md` sub-agents table includes gemini
-- [ ] `claude/CLAUDE.md` sub-agents table marks log-analyzer as deprecated
-- [ ] `claude/agents/log-analyzer.md` has deprecation notice at top
-- [ ] Documentation explains both modes (log analysis, web search)
-- [ ] No references to "fallback to log-analyzer"
-- [ ] Migration path documented and followed
+- [x] `claude/agents/README.md` updated with gemini agent documentation
+- [x] `claude/agents/README.md` marks log-analyzer as deprecated
+- [x] `claude/CLAUDE.md` sub-agents table includes gemini
+- [x] `claude/CLAUDE.md` sub-agents table marks log-analyzer as deprecated
+- [x] `claude/agents/log-analyzer.md` has deprecation notice at top
+- [x] Documentation explains both modes (log analysis, web search)
+- [x] No references to "fallback to log-analyzer"
+- [x] Migration path documented and followed

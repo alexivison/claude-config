@@ -89,9 +89,9 @@ echo '{"prompt": "fix the caching bug"}' | claude/hooks/skill-eval.sh | grep -v 
 
 ## Acceptance Criteria
 
-- [ ] skill-eval.sh updated with web search pattern
-- [ ] Pattern triggers for research-related queries
-- [ ] Uses SHOULD priority (not MUST)
-- [ ] No conflicts with existing patterns
-- [ ] Shell syntax is valid
-- [ ] Suggests gemini agent specifically
+- [x] skill-eval.sh updated with web search pattern
+- [x] Pattern triggers for research-related queries
+- [x] Uses SHOULD priority (not MUST)
+- [x] No conflicts with existing patterns
+- [x] Shell syntax is valid
+- [x] Suggests gemini agent specifically

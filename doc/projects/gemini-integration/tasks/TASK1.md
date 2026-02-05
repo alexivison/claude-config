@@ -183,32 +183,32 @@ grep -q "gemini-2.0-flash" claude/agents/gemini.md
 
 ## Acceptance Criteria
 
-- [ ] Agent definition created at `claude/agents/gemini.md`
-- [ ] Mode detection:
-  - [ ] Supports explicit mode override (`mode:log`, `mode:web`)
-  - [ ] Falls back to keyword heuristics when no explicit mode
-- [ ] Log analysis mode:
-  - [ ] Size estimation uses byte count (`wc -c`) ÷ 4 for tokens
-  - [ ] Uses gemini-2.0-flash for logs < 500K tokens
-  - [ ] Uses gemini-2.5-pro for logs >= 500K tokens
-  - [ ] Warns if logs exceed 1.6M tokens (potential truncation)
-  - [ ] Handles ALL log sizes (no delegation to log-analyzer)
-  - [ ] Context overflow: time-range filtering or chunking strategy
-  - [ ] Uses `cat logs | gemini -p` pattern (stdin piping)
-  - [ ] Uses gemini-2.5-pro model
-  - [ ] Uses `--approval-mode plan` for read-only
-  - [ ] Output format matches existing log-analyzer
-- [ ] CLI resolution:
-  - [ ] Uses `GEMINI_PATH` env var if set
-  - [ ] Falls back to `command -v gemini`
-  - [ ] Falls back to `$(npm root -g)/@google/gemini-cli/bin/gemini`
-- [ ] Web search mode:
-  - [ ] Uses WebSearch tool for queries (agent has this tool)
-  - [ ] Optionally uses WebFetch for full page content
-  - [ ] Synthesizes results with gemini-2.0-flash model
-  - [ ] Includes source citations with URLs
-- [ ] Verification tests:
-  - [ ] Log analysis: Test with file >2MB, verify gemini-2.5-pro used
-  - [ ] Log analysis: Test with file <2MB, verify gemini-2.0-flash used
-  - [ ] Web search: Test with explicit "search the web" query
-  - [ ] CLI: Verify all three resolution paths work
+- [x] Agent definition created at `claude/agents/gemini.md`
+- [x] Mode detection:
+  - [x] Supports explicit mode override (`mode:log`, `mode:web`)
+  - [x] Falls back to keyword heuristics when no explicit mode
+- [x] Log analysis mode:
+  - [x] Size estimation uses byte count (`wc -c`) ÷ 4 for tokens
+  - [x] Uses gemini-2.0-flash for logs < 500K tokens
+  - [x] Uses gemini-2.5-pro for logs >= 500K tokens
+  - [x] Warns if logs exceed 1.6M tokens (potential truncation)
+  - [x] Handles ALL log sizes (no delegation to log-analyzer)
+  - [x] Context overflow: time-range filtering or chunking strategy
+  - [x] Uses `cat logs | gemini -p` pattern (stdin piping)
+  - [x] Uses gemini-2.5-pro model
+  - [x] Uses `--approval-mode plan` for read-only
+  - [x] Output format matches existing log-analyzer
+- [x] CLI resolution:
+  - [x] Uses `GEMINI_PATH` env var if set
+  - [x] Falls back to `command -v gemini`
+  - [x] Falls back to `$(npm root -g)/@google/gemini-cli/bin/gemini`
+- [x] Web search mode:
+  - [x] Uses WebSearch tool for queries (agent has this tool)
+  - [x] Optionally uses WebFetch for full page content
+  - [x] Synthesizes results with gemini-2.0-flash model
+  - [x] Includes source citations with URLs
+- [x] Verification tests:
+  - [x] Log analysis: Test with file >2MB, verify gemini-2.5-pro used
+  - [x] Log analysis: Test with file <2MB, verify gemini-2.0-flash used
+  - [x] Web search: Test with explicit "search the web" query
+  - [x] CLI: Verify all three resolution paths work
