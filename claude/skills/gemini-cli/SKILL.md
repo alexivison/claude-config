@@ -336,22 +336,31 @@ Timeline: {start} → {end}
 
 ### Output Format
 
-Return directly (no file):
+**You (wrapper agent) write this file** using the Write tool:
 
 ```markdown
-## Research Findings
+# Research: {identifier}
 
+**Date:** {YYYY-MM-DD HH:MM:SS}
 **Query:** {original_question}
 
-### Answer
+## Answer
 {Synthesized answer}
 
-### Key Points
+## Key Points
 - {Bullet points}
 
-### Sources
+## Sources
 1. [{title}]({url}) - {brief description}
 2. ...
+```
+
+**Return message to user:**
+```
+Research complete.
+Findings: ~/.claude/research/{identifier}.md
+Summary: {one-line summary}
+Sources: {count} sources consulted
 ```
 
 ## Boundaries and Safety

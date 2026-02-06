@@ -32,7 +32,7 @@ Sub-agents preserve context by offloading investigation/verification tasks.
 | Log analysis (large) | gemini-2.5-pro | Logs >= 400K tokens |
 | Web search | gemini-2.0-flash | Research queries with explicit external intent |
 
-**Writes to:** `~/.claude/logs/{identifier}.md` (log analysis) or returns inline (web search)
+**Writes to:** `~/.claude/logs/{identifier}.md` (log analysis) or `~/.claude/research/{identifier}.md` (web search)
 
 **Returns:** Structured findings with sources cited.
 
