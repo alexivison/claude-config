@@ -2,7 +2,7 @@
 
 ## Git & PRs
 - Use `gh` for GitHub operations
-- Look for PR templates when creating PRs (check `.github/PULL_REQUEST_TEMPLATE.md`)
+- PR descriptions: follow `rules/pr-descriptions.md`
 - Create draft PRs unless instructed otherwise
 - Create branches from `main`
 - Branch naming: `<ISSUE-ID>-<kebab-case-description>` (e.g., `ENG-123-add-user-auth`)
