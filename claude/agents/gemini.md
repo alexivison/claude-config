@@ -23,7 +23,7 @@ You (the wrapper agent) orchestrate the task: mode detection, size estimation, C
 | Mode | Who Analyzes | Who Writes Output | Output Location |
 |------|--------------|-------------------|-----------------|
 | Log analysis | Gemini CLI | **Wrapper agent (you)** | `~/.claude/logs/{identifier}.md` |
-| Web search | Gemini CLI | **Wrapper agent (you)** | Inline (no file) |
+| Web search | Gemini CLI | **Wrapper agent (you)** | `~/.claude/research/{identifier}.md` |
 
 **Gemini CLI returns analysis via stdout. You capture it and write to the appropriate location.**
 
